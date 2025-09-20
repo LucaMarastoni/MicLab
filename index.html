@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>MicLab — Video + Carosello</title>
+  <meta name="description" content="MicLab: hero video reattivo, menù a tendina e carosello di link YouTube.">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="site-header" data-header>
+    <div class="container header-inner">
+      <a href="#" class="brand" aria-label="MicLab homepage">
+        <img src="assets/logo.jpg" alt="MicLab logo" class="brand__logo" />
+        <span class="brand__name">MicLab</span>
+      </a>
+
+      <button class="hamburger" id="menuToggle" aria-controls="siteMenu" aria-expanded="false" aria-label="Apri menù">
+        <span class="hamburger-lines" aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <!-- Menù a tendina -->
+    <nav id="siteMenu" class="dropdown" hidden>
+      <ul>
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#carosello">Video</a></li>
+        <li><a href="#contatti">Contatti</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- HERO / LEADER -->
+    <section id="hero" class="hero">
+      <video
+        id="heroVideo"
+        class="hero__video"
+        playsinline
+        muted
+        loop
+        autoplay
+        preload="metadata"
+        poster="assets/poster.jpg"
+        data-src-sm="assets/hero-480.mp4"
+        data-src-md="assets/hero-720.mp4"
+        data-src-lg="assets/hero-1080.mp4"
+        aria-label="Video introduttivo">
+      </video>
+
+      <!-- Overlay titolo + slogan -->
+      <div class="hero__overlay">
+        <h1 class="hero__title">MicLab</h1>
+        <p class="subtitle">Sperimentazioni video in bianco e nero</p>
+      </div>
+
+      <!-- Play overlay (fallback se l’autoplay è bloccato) -->
+      <button class="play-overlay" id="playOverlay" hidden aria-label="Avvia video">►</button>
+    </section>
+
+    <!-- CAROSELLO -->
+    <section id="carosello" class="carousel-section">
+      <div class="container section-head">
+        <h2 class="section-title">Selezione YouTube</h2>
+        <div class="section-actions">
+          <button class="nav-btn prev" aria-label="Scorri a sinistra" data-prev>‹</button>
+          <button class="nav-btn next" aria-label="Scorri a destra" data-next>›</button>
+        </div>
+      </div>
+
+      <div class="carousel" data-carousel>
+        <a class="card" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer" title="Guarda su YouTube">
+          <img src="assets/thumb1.jpg" alt="Anteprima Video 1" class="card__img" loading="lazy" />
+          <div class="card__caption">Video 1</div>
+        </a>
+
+        <a class="card" href="https://www.youtube.com/watch?v=aqz-KE-bpKQ" target="_blank" rel="noopener noreferrer" title="Guarda su YouTube">
+          <img src="assets/thumb2.jpg" alt="Anteprima Video 2" class="card__img" loading="lazy" />
+          <div class="card__caption">Video 2</div>
+        </a>
+
+        <a class="card" href="https://www.youtube.com/watch?v=jNQXAC9IVRw" target="_blank" rel="noopener noreferrer" title="Guarda su YouTube">
+          <img src="assets/thumb3.jpg" alt="Anteprima Video 3" class="card__img" loading="lazy" />
+          <div class="card__caption">Video 3</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- CONTATTI -->
+    <section id="contatti" class="contacts">
+      <div class="container">
+        <h2 class="section-title">Contatti</h2>
+        <p>Scrivici a <a href="mailto:info@example.com">info@example.com</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>© 2025 — MicLab</small>
+    </div>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
