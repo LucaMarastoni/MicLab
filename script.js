@@ -165,3 +165,67 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
     if (document.hidden) clearInterval(interval);
   }, { once: true });
 })();
+
+/* ===== PRIVACY POLICY MODAL ===== */
+(function setupPrivacyModal(){
+  const openBtn = document.getElementById('ppOpen');
+  const dialog  = document.getElementById('ppDialog');
+  const closeBtn= document.getElementById('ppClose');
+  const backdrop= dialog?.querySelector('[data-close-modal]');
+  let lastFocused = null;
+
+  if (!openBtn || !dialog || !closeBtn || !backdrop) return;
+
+  const getTabbables = () => [
+    ...dialog.querySelectorAll(
+      'a, button, input, textarea, select, details,[tabindex]:not([tabindex="-1"])'
+    )
+  ].filter(el => !el.hasAttribute('disabled') && !el.getAttribute('aria-hidden'));
+
+  function openModal(){
+    lastFocused = document.activeElement;
+    dialog.hidden = false;
+    document.body.classList.add('no-scroll');
+    // focus primo elemento utile
+    const tabbables = getTabbables();
+    (tabbables[0] || closeBtn).focus();
+    // ARIA
+    openBtn.setAttribute('aria-expanded', 'true');
+    // chiudi su ESC
+    document.addEventListener('keydown', onKeydown);
+    // focus trap
+    dialog.addEventListener('keydown', trapTab);
+  }
+
+  function closeModal(){
+    dialog.hidden = true;
+    document.body.classList.remove('no-scroll');
+    openBtn.setAttribute('aria-expanded', 'false');
+    document.removeEventListener('keydown', onKeydown);
+    dialog.removeEventListener('keydown', trapTab);
+    // torna al punto di partenza
+    if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+  }
+
+  function onKeydown(e){
+    if (e.key === 'Escape') closeModal();
+  }
+
+  function trapTab(e){
+    if (e.key !== 'Tab') return;
+    const tabbables = getTabbables();
+    if (tabbables.length === 0) return;
+    const first = tabbables[0];
+    const last  = tabbables[tabbables.length - 1];
+
+    if (e.shiftKey && document.activeElement === first){
+      e.preventDefault(); last.focus();
+    } else if (!e.shiftKey && document.activeElement === last){
+      e.preventDefault(); first.focus();
+    }
+  }
+
+  openBtn.addEventListener('click', openModal);
+  closeBtn.addEventListener('click', closeModal);
+  backdrop.addEventListener('click', closeModal);
+})();
