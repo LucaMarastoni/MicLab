@@ -161,3 +161,66 @@ body{
 
 /* Focus visibile */
 :focus-visible{ outline: 2px dashed #fff; outline-offset: 2px; }
+
+/* ===== ABOUT / DESCRIZIONE ===== */
+.about{
+  padding-block: 42px 56px;
+  border-top: 1px solid #111;
+  background: #000; /* coerente con tema */
+}
+
+.about__lead{
+  margin: 8px 0 10px;
+  font-size: clamp(18px, 4.5vw, 28px);
+  line-height: 1.25;
+  letter-spacing: .005em;
+}
+
+.about__desc{
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(14px, 3.2vw, 16px);
+  max-width: 68ch;
+}
+
+/* Rotatore parola */
+.about__static{ white-space: normal; }
+.about__rotator{
+  display: inline-block;
+  padding: 0 .12em;
+  margin: 0 .1em;
+  position: relative;
+  will-change: contents, opacity, transform;
+  transition: opacity .35s var(--ease), transform .35s var(--ease);
+}
+
+/* Cursorino (puoi rimuoverlo se non ti piace) */
+.about__rotator::after{
+  content: "";
+  display: inline-block;
+  width: .6ch;
+  border-left: 2px solid var(--fg);
+  margin-left: .12ch;
+  transform: translateY(.15em);
+  animation: blink 1.1s steps(1) infinite;
+}
+
+@keyframes blink { 50% { opacity: 0; } }
+
+/* Entrata on-scroll (reveal) */
+.reveal{
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .5s var(--ease), transform .5s var(--ease);
+}
+.reveal.in{
+  opacity: 1;
+  transform: none;
+}
+
+/* Accessibilità motion */
+@media (prefers-reduced-motion: reduce){
+  .about__rotator::after{ animation: none; }
+  .reveal, .reveal.in { transition: none !important; }
+}
+

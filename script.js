@@ -111,3 +111,57 @@ rail.addEventListener('pointermove', (e) => {
 ['pointerup','pointercancel','pointerleave'].forEach(evt => {
   rail.addEventListener(evt, () => { isDown = false; rail.style.cursor = ''; });
 });
+
+/* ===== REVEAL ON SCROLL + ROTATORE ===== */
+
+// Entrata morbida on-scroll
+const io = new IntersectionObserver((entries) => {
+  entries.forEach((e) => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }
+  });
+}, { rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Rotatore parola (about__rotator)
+(function setupWordRotator(){
+  const rot = document.querySelector('.about__rotator');
+  if (!rot) return;
+
+  // Rispetta reduced motion: non ruotare parole
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const words = (() => {
+    try { return JSON.parse(rot.dataset.words || '[]'); }
+    catch { return []; }
+  })();
+
+  if (reduced || words.length === 0) return;
+
+  let i = 0;
+  const base = rot.textContent.trim() || words[0];
+
+  rot.textContent = base;
+
+  const swap = () => {
+    i = (i + 1) % words.length;
+    // piccola transizione in/out
+    rot.style.opacity = '0';
+    rot.style.transform = 'translateY(4px)';
+    setTimeout(() => {
+      rot.textContent = words[i];
+      rot.style.opacity = '1';
+      rot.style.transform = 'translateY(0)';
+    }, 180);
+  };
+
+  // cambia parola ogni ~2.4s
+  const interval = setInterval(swap, 2400);
+
+  // Se la scheda va in background, ferma/riavvia per risparmiare batteria
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) clearInterval(interval);
+  }, { once: true });
+})();
