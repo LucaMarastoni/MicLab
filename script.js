@@ -227,8 +227,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
         src: 'assets/people/cantanti/MICLAB-Ernesto Alemà .jpg',
         alt: 'Ritratto di Ernesto Alemà',
         details: [
-          { label: 'Nome', value: 'Ernesto' },
-          { label: 'Cognome', value: 'Alemà' },
+          { label: 'Nome e Cognome', value: 'Ernesto Alemà' },
           { label: "Nome d'arte", value: 'Ernesto Alemà' },
           { label: 'Città', value: 'Roma' },
           { label: 'Band', value: 'Soloperisoci' },
@@ -241,8 +240,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
         src: 'assets/people/cantanti/MICLAB-Francesca.jpg',
         alt: 'Ritratto di Francesca',
         details: [
-          { label: 'Nome', value: 'Francesca' },
-          { label: 'Cognome', value: 'Vezzali' },
+          { label: 'Nome e Cognome', value: 'Francesca Vezzali' },
           { label: "Nome d'arte", value: 'Francesca' },
           { label: 'Città', value: 'Verona' },
           { label: 'Band', value: 'Something Else' }
@@ -254,8 +252,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
         src: 'assets/people/cantanti/MICLAB-Sesto.jpg',
         alt: 'Ritratto di Sesto',
         details: [
-          { label: 'Nome', value: 'Samuele' },
-          { label: 'Cognome', value: 'Magagnini' },
+          { label: 'Nome e Cognome', value: 'Samuele Magagnini' },
           { label: "Nome d'arte", value: 'Sesto VI' }
         ],
         instagram: '@samuelesesto'
@@ -265,8 +262,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
         src: 'assets/people/cantanti/MICLAB-Sole.jpg',
         alt: 'Ritratto di Sole',
         details: [
-          { label: 'Nome', value: 'Mariasole' },
-          { label: 'Cognome', value: 'Benvenuto' },
+          { label: 'Nome e Cognome', value: 'Mariasole Benvenuto' },
           { label: "Nome d'arte", value: 'Sole' },
           { label: 'Città', value: 'Verona' }
         ],
@@ -279,8 +275,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
         src: 'assets/people/rapper/MICLAB-Blackmill.jpg',
         alt: 'Ritratto di Blackmill',
         details: [
-          { label: 'Nome', value: 'Martin' },
-          { label: 'Cognome', value: 'Elekwachi' },
+          { label: 'Nome e Cognome', value: 'Martin Elekwachi' },
           { label: "Nome d'arte", value: 'Blackmill' },
           { label: 'Città', value: 'Modena' }
         ],
@@ -291,8 +286,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
         src: 'assets/people/rapper/MICLAB-JoeJoe.jpg',
         alt: 'Ritratto di JoeJoe',
         details: [
-          { label: 'Nome', value: 'Joel' },
-          { label: 'Cognome', value: 'Mateus' },
+          { label: 'Nome e Cognome', value: 'Joel Mateus' },
           { label: "Nome d'arte", value: 'JoeJoe' },
           { label: 'Città', value: 'Lecco' }
         ],
@@ -303,8 +297,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
         src: 'assets/people/rapper/MICLAB-Numb.jpg',
         alt: 'Ritratto di Numb',
         details: [
-          { label: 'Nome', value: 'Filippo' },
-          { label: 'Cognome', value: 'Toffanin' },
+          { label: 'Nome e Cognome', value: 'Filippo Toffanin' },
           { label: "Nome d'arte", value: 'Numb' },
           { label: 'Città', value: 'Verona' }
         ],
@@ -315,8 +308,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
         src: 'assets/people/rapper/MICLAB-Ozymandias.jpg',
         alt: 'Ritratto di Ozymandias',
         details: [
-          { label: 'Nome', value: 'Giovanni Fausto' },
-          { label: 'Cognome', value: 'Meloni' },
+          { label: 'Nome e Cognome', value: 'Giovanni Fausto Meloni' },
           { label: "Nome d'arte", value: 'Ozymandias' },
           { label: 'Città', value: 'Roma' }
         ],
@@ -329,8 +321,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
         src: 'assets/people/musicisti/MICLAB-Sbre.jpg',
         alt: 'Ritratto di Sbre',
         details: [
-          { label: 'Nome', value: 'Luca' },
-          { label: 'Cognome', value: 'Ghirlanda' },
+          { label: 'Nome e Cognome', value: 'Luca Ghirlanda' },
           { label: "Nome d'arte", value: 'Sbre' },
           { label: 'Città', value: 'Verona' },
           { label: 'Band', value: 'The Foolz' }
@@ -342,8 +333,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
         src: 'assets/people/musicisti/MICLAB-Simone Rodriquez.jpg',
         alt: 'Ritratto di Simone Rodriquez',
         details: [
-          { label: 'Nome', value: 'Simone' },
-          { label: 'Cognome', value: 'Rodriquez' },
+          { label: 'Nome e Cognome', value: 'Simone Rodriquez' },
           { label: "Nome d'arte", value: 'Simone Rodriquez' },
           { label: 'Città', value: 'Napoli' }
         ],
@@ -354,8 +344,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
         src: 'assets/people/musicisti/MICLAB-Spettrosereno.jpg',
         alt: 'Ritratto di Spettrosereno',
         details: [
-          { label: 'Nome', value: 'Riccardo' },
-          { label: 'Cognome', value: 'Scaioli' },
+          { label: 'Nome e Cognome', value: 'Riccardo Scaioli' },
           { label: "Nome d'arte", value: 'Spettrosereno' },
           { label: 'Città', value: 'Verona' },
           { label: 'Band', value: 'Inaria' }
@@ -367,8 +356,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
         src: 'assets/people/musicisti/MICLAB-Vamnto .jpg',
         alt: 'Ritratto di Vamnto',
         details: [
-          { label: 'Nome', value: 'Luca' },
-          { label: 'Cognome', value: 'Manzini' },
+          { label: 'Nome e Cognome', value: 'Luca Manzini' },
           { label: "Nome d'arte", value: 'Vamnto' },
           { label: 'Città', value: 'Verona' },
           { label: 'Band', value: 'Seeds' }
@@ -382,8 +370,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
         src: 'assets/people/producer/MICLAB-Dave.jpg',
         alt: 'Ritratto di Dave',
         details: [
-          { label: 'Nome', value: 'Davide' },
-          { label: 'Cognome', value: 'Carli' },
+          { label: 'Nome e Cognome', value: 'Davide Carli' },
           { label: "Nome d'arte", value: 'Dave the Mojo' },
           { label: 'Alias', value: 'The Mojomatic' },
           { label: 'Città', value: 'Verona' }
@@ -395,8 +382,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
         src: 'assets/people/producer/MICLAB-Drew.jpg',
         alt: 'Ritratto di Drew',
         details: [
-          { label: 'Nome', value: 'Andrea' },
-          { label: 'Cognome', value: 'Vecchietti' },
+          { label: 'Nome e Cognome', value: 'Andrea Vecchietti' },
           { label: "Nome d'arte", value: 'Drew' },
           { label: 'Città', value: 'Verona' }
         ],
@@ -407,8 +393,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
         src: 'assets/people/producer/MICLAB-Pry.jpg',
         alt: 'Ritratto di Pry',
         details: [
-          { label: 'Nome', value: 'Thomas' },
-          { label: 'Cognome', value: 'Prymus' },
+          { label: 'Nome e Cognome', value: 'Thomas Prymus' },
           { label: "Nome d'arte", value: 'Pry' },
           { label: 'Città', value: 'Verona' }
         ],
@@ -419,8 +404,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
         src: 'assets/people/producer/MICLAB-Tokyo.jpg',
         alt: 'Ritratto di Tokyo',
         details: [
-          { label: 'Nome', value: 'Federico' },
-          { label: 'Cognome', value: 'Accordini' },
+          { label: 'Nome e Cognome', value: 'Federico Accordini' },
           { label: "Nome d'arte", value: 'Tokyo' },
           { label: 'Città', value: 'Verona' }
         ],
