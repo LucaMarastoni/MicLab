@@ -527,6 +527,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
         const value = String(detail.value ?? '').trim();
         if (!value) return;
         if (label === "nome d'arte") return;
+        if (label.includes('band') && label.includes('ig')) return;
 
         if (label === 'nome') { firstName = value; return; }
         if (label === 'cognome') { lastName = value; return; }
