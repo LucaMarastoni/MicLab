@@ -330,7 +330,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
       },
       {
         name: 'Simone Rodriquez',
-        src: 'assets/people/musicisti/MICLAB-Simone Rodriquez.jpg',
+        src: 'assets/people/musicisti/MICLAB-Simone Rodriquez.jpeg',
         alt: 'Ritratto di Simone Rodriquez',
         details: [
           { label: 'Nome e Cognome', value: 'Simone Rodriquez' },
@@ -562,42 +562,41 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
           if (handleLink) linkHref = `https://www.instagram.com/${handleLink.replace(/^@/, '')}/`;
         }
 
-        const item = document.createElement('div');
-        item.className = 'gallery-meta-item';
-
         if (linkHref) {
-          const link = document.createElement('a');
-          link.href = linkHref;
-          link.target = '_blank';
-          link.rel = 'noopener noreferrer';
-          link.classList.add('gallery-meta-link');
+          const anchor = document.createElement('a');
+          anchor.href = linkHref;
+          anchor.target = '_blank';
+          anchor.rel = 'noopener noreferrer';
+          anchor.className = 'gallery-meta-item gallery-meta-link';
 
           if (looksLikeHandle) {
-            link.classList.add('gallery-meta-link--icon');
+            anchor.classList.add('gallery-meta-link--icon');
             const icon = document.createElement('img');
             icon.src = 'assets/insta-logo.png';
             icon.alt = '';
             icon.setAttribute('aria-hidden', 'true');
             icon.classList.add('gallery-meta-icon');
-            link.append(icon);
+            anchor.append(icon);
 
             const sr = document.createElement('span');
             sr.className = 'sr-only';
             sr.textContent = `Apri Instagram di ${entry.name}`;
-            link.append(sr);
+            anchor.append(sr);
           } else {
-            link.textContent = rawValue;
+            anchor.textContent = rawValue;
           }
 
-          if (!link.hasAttribute('aria-label')) {
-            link.setAttribute('aria-label', detail.label ? `Apri ${detail.label} di ${entry.name}` : `Apri profilo di ${entry.name}`);
+          if (!anchor.hasAttribute('aria-label')) {
+            anchor.setAttribute('aria-label', detail.label ? `Apri ${detail.label} di ${entry.name}` : `Apri profilo di ${entry.name}`);
           }
-          item.append(link);
+
+          metaWrap.append(anchor);
         } else {
-          item.textContent = rawValue;
+          const chip = document.createElement('div');
+          chip.className = 'gallery-meta-item';
+          chip.textContent = rawValue;
+          metaWrap.append(chip);
         }
-
-        metaWrap.append(item);
       });
 
       metaWrap.hidden = metaWrap.childElementCount === 0;
