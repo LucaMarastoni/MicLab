@@ -30,8 +30,8 @@
       <ul>
         <li><a href="index.html#hero">Home</a></li>
         <li><a href="index.html#carosello">Episodes</a></li>
-        <li><a href="index.html#about">About</a></li>
         <li><a href="artisti.html">Artisti</a></li>
+        <li><a href="index.html#about">About</a></li>
       </ul>
     </nav>
   </header>
@@ -155,7 +155,16 @@
         </div>
         <figcaption class="gallery-modal__caption">
           <h3 id="galleryTitle" data-gallery-name></h3>
-          <p data-gallery-description></p>
+          <p class="gallery-modal__summary" data-gallery-summary hidden></p>
+          <dl class="gallery-modal__meta" data-gallery-meta></dl>
+          <a class="ig-button" data-gallery-instagram hidden target="_blank" rel="noopener noreferrer">
+            <span class="ig-button__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="presentation" focusable="false">
+                <path d="M16.5 3h-9A4.5 4.5 0 003 7.5v9A4.5 4.5 0 007.5 21h9a4.5 4.5 0 004.5-4.5v-9A4.5 4.5 0 0016.5 3zm3 13.5a3 3 0 01-3 3h-9a3 3 0 01-3-3v-9a3 3 0 013-3h9a3 3 0 013 3zm-7.5-8A4.5 4.5 0 107 13a4.5 4.5 0 006-4.5zm0 7.2A2.7 2.7 0 1114.7 12 2.7 2.7 0 0112 15.7zm5.05-8.9a1.05 1.05 0 11-1.05-1.05 1.05 1.05 0 011.05 1.05z"/>
+              </svg>
+            </span>
+            <span class="ig-button__label" data-gallery-instagram-handle></span>
+          </a>
         </figcaption>
       </figure>
 

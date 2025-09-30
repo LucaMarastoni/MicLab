@@ -208,41 +208,226 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   const panel = modal.querySelector('.gallery-modal__panel');
   const imageEl = modal.querySelector('[data-gallery-image]');
   const nameEl = modal.querySelector('[data-gallery-name]');
-  const descriptionEl = modal.querySelector('[data-gallery-description]');
+  const summaryEl = modal.querySelector('[data-gallery-summary]');
+  const metaWrap = modal.querySelector('[data-gallery-meta]');
   const counterEl = modal.querySelector('[data-gallery-counter]');
   const prevBtn = modal.querySelector('[data-gallery-prev]');
   const nextBtn = modal.querySelector('[data-gallery-next]');
   const thumbsWrap = modal.querySelector('[data-gallery-thumbs]');
   const dismissEls = modal.querySelectorAll('[data-gallery-dismiss]');
   const closeBtn = modal.querySelector('.gallery-modal__close');
+  const instagramBtn = modal.querySelector('[data-gallery-instagram]');
+  const instagramHandleEl = modal.querySelector('[data-gallery-instagram-handle]');
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if (!panel || !imageEl || !nameEl || !descriptionEl || !counterEl || !thumbsWrap) return;
+  if (!panel || !imageEl || !nameEl || !counterEl || !thumbsWrap) return;
 
   const galleryData = {
     cantanti: [
-      { name: 'Ernesto Alemà', src: 'assets/people/cantanti/MICLAB-Ernesto Alemà .jpg', alt: 'Ritratto di Ernesto Alemà', description: 'Cantante del collettivo MicLab.' },
-      { name: 'Francesca', src: 'assets/people/cantanti/MICLAB-Francesca.jpg', alt: 'Ritratto di Francesca', description: 'Cantante del collettivo MicLab.' },
-      { name: 'Sesto', src: 'assets/people/cantanti/MICLAB-Sesto.jpg', alt: 'Ritratto di Sesto', description: 'Cantante del collettivo MicLab.' },
-      { name: 'Sole', src: 'assets/people/cantanti/MICLAB-Sole.jpg', alt: 'Ritratto di Sole', description: 'Cantante del collettivo MicLab.' }
+      {
+        name: 'Ernesto Alemà',
+        src: 'assets/people/cantanti/MICLAB-Ernesto Alemà .jpg',
+        alt: 'Ritratto di Ernesto Alemà',
+        details: [
+          { label: 'Nome', value: 'Ernesto' },
+          { label: 'Cognome', value: 'Alemà' },
+          { label: "Nome d'arte", value: 'Ernesto Alemà' },
+          { label: 'Città', value: 'Roma' },
+          { label: 'Band', value: 'Soloperisoci' },
+          { label: 'Band IG', value: '@soloperisoci' }
+        ],
+        instagram: '@ernyboyle'
+      },
+      {
+        name: 'Francesca',
+        src: 'assets/people/cantanti/MICLAB-Francesca.jpg',
+        alt: 'Ritratto di Francesca',
+        details: [
+          { label: 'Nome', value: 'Francesca' },
+          { label: 'Cognome', value: 'Vezzali' },
+          { label: "Nome d'arte", value: 'Francesca' },
+          { label: 'Città', value: 'Verona' },
+          { label: 'Band', value: 'Something Else' }
+        ],
+        instagram: '@francesca_vezzali'
+      },
+      {
+        name: 'Sesto VI',
+        src: 'assets/people/cantanti/MICLAB-Sesto.jpg',
+        alt: 'Ritratto di Sesto',
+        details: [
+          { label: 'Nome', value: 'Samuele' },
+          { label: 'Cognome', value: 'Magagnini' },
+          { label: "Nome d'arte", value: 'Sesto VI' }
+        ],
+        instagram: '@samuelesesto'
+      },
+      {
+        name: 'Sole',
+        src: 'assets/people/cantanti/MICLAB-Sole.jpg',
+        alt: 'Ritratto di Sole',
+        details: [
+          { label: 'Nome', value: 'Mariasole' },
+          { label: 'Cognome', value: 'Benvenuto' },
+          { label: "Nome d'arte", value: 'Sole' },
+          { label: 'Città', value: 'Verona' }
+        ],
+        instagram: '@soundslikesole'
+      }
     ],
     rapper: [
-      { name: 'Blackmill', src: 'assets/people/rapper/MICLAB-Blackmill.jpg', alt: 'Ritratto di Blackmill', description: 'Rapper del collettivo MicLab.' },
-      { name: 'JoeJoe', src: 'assets/people/rapper/MICLAB-JoeJoe.jpg', alt: 'Ritratto di JoeJoe', description: 'Rapper del collettivo MicLab.' },
-      { name: 'Numb', src: 'assets/people/rapper/MICLAB-Numb.jpg', alt: 'Ritratto di Numb', description: 'Rapper del collettivo MicLab.' },
-      { name: 'Ozymandias', src: 'assets/people/rapper/MICLAB-Ozymandias.jpg', alt: 'Ritratto di Ozymandias', description: 'Rapper del collettivo MicLab.' }
+      {
+        name: 'Blackmill',
+        src: 'assets/people/rapper/MICLAB-Blackmill.jpg',
+        alt: 'Ritratto di Blackmill',
+        details: [
+          { label: 'Nome', value: 'Martin' },
+          { label: 'Cognome', value: 'Elekwachi' },
+          { label: "Nome d'arte", value: 'Blackmill' },
+          { label: 'Città', value: 'Modena' }
+        ],
+        instagram: '@blackmillofficial'
+      },
+      {
+        name: 'JoeJoe',
+        src: 'assets/people/rapper/MICLAB-JoeJoe.jpg',
+        alt: 'Ritratto di JoeJoe',
+        details: [
+          { label: 'Nome', value: 'Joel' },
+          { label: 'Cognome', value: 'Mateus' },
+          { label: "Nome d'arte", value: 'JoeJoe' },
+          { label: 'Città', value: 'Lecco' }
+        ],
+        instagram: '@joejoe8m'
+      },
+      {
+        name: 'Numb',
+        src: 'assets/people/rapper/MICLAB-Numb.jpg',
+        alt: 'Ritratto di Numb',
+        details: [
+          { label: 'Nome', value: 'Filippo' },
+          { label: 'Cognome', value: 'Toffanin' },
+          { label: "Nome d'arte", value: 'Numb' },
+          { label: 'Città', value: 'Verona' }
+        ],
+        instagram: '@numb_real'
+      },
+      {
+        name: 'Ozymandias',
+        src: 'assets/people/rapper/MICLAB-Ozymandias.jpg',
+        alt: 'Ritratto di Ozymandias',
+        details: [
+          { label: 'Nome', value: 'Giovanni Fausto' },
+          { label: 'Cognome', value: 'Meloni' },
+          { label: "Nome d'arte", value: 'Ozymandias' },
+          { label: 'Città', value: 'Roma' }
+        ],
+        instagram: '@ozymandias.official'
+      }
     ],
     musicisti: [
-      { name: 'Sbre', src: 'assets/people/musicisti/MICLAB-Sbre.jpg', alt: 'Ritratto di Sbre', description: 'Musicista del collettivo MicLab.' },
-      { name: 'Simone Rodriquez', src: 'assets/people/musicisti/MICLAB-Simone Rodriquez.jpg', alt: 'Ritratto di Simone Rodriquez', description: 'Musicista del collettivo MicLab.' },
-      { name: 'Spettrosereno', src: 'assets/people/musicisti/MICLAB-Spettrosereno.jpg', alt: 'Ritratto di Spettrosereno', description: 'Musicista del collettivo MicLab.' },
-      { name: 'Vamnto', src: 'assets/people/musicisti/MICLAB-Vamnto .jpg', alt: 'Ritratto di Vamnto', description: 'Musicista del collettivo MicLab.' }
+      {
+        name: 'Sbre',
+        src: 'assets/people/musicisti/MICLAB-Sbre.jpg',
+        alt: 'Ritratto di Sbre',
+        details: [
+          { label: 'Nome', value: 'Luca' },
+          { label: 'Cognome', value: 'Ghirlanda' },
+          { label: "Nome d'arte", value: 'Sbre' },
+          { label: 'Città', value: 'Verona' },
+          { label: 'Band', value: 'The Foolz' }
+        ],
+        instagram: '@luca.ghirlanda'
+      },
+      {
+        name: 'Simone Rodriquez',
+        src: 'assets/people/musicisti/MICLAB-Simone Rodriquez.jpg',
+        alt: 'Ritratto di Simone Rodriquez',
+        details: [
+          { label: 'Nome', value: 'Simone' },
+          { label: 'Cognome', value: 'Rodriquez' },
+          { label: "Nome d'arte", value: 'Simone Rodriquez' },
+          { label: 'Città', value: 'Napoli' }
+        ],
+        instagram: '@simone.gennaro.rodriquez'
+      },
+      {
+        name: 'Spettrosereno',
+        src: 'assets/people/musicisti/MICLAB-Spettrosereno.jpg',
+        alt: 'Ritratto di Spettrosereno',
+        details: [
+          { label: 'Nome', value: 'Riccardo' },
+          { label: 'Cognome', value: 'Scaioli' },
+          { label: "Nome d'arte", value: 'Spettrosereno' },
+          { label: 'Città', value: 'Verona' },
+          { label: 'Band', value: 'Inaria' }
+        ],
+        instagram: '@spettrosereno'
+      },
+      {
+        name: 'Vamnto',
+        src: 'assets/people/musicisti/MICLAB-Vamnto .jpg',
+        alt: 'Ritratto di Vamnto',
+        details: [
+          { label: 'Nome', value: 'Luca' },
+          { label: 'Cognome', value: 'Manzini' },
+          { label: "Nome d'arte", value: 'Vamnto' },
+          { label: 'Città', value: 'Verona' },
+          { label: 'Band', value: 'Seeds' }
+        ],
+        instagram: '@ukladimir_lincolini'
+      }
     ],
     producer: [
-      { name: 'Dave', src: 'assets/people/producer/MICLAB-Dave.jpg', alt: 'Ritratto di Dave', description: 'Producer del collettivo MicLab.' },
-      { name: 'Drew', src: 'assets/people/producer/MICLAB-Drew.jpg', alt: 'Ritratto di Drew', description: 'Producer del collettivo MicLab.' },
-      { name: 'Pry', src: 'assets/people/producer/MICLAB-Pry.jpg', alt: 'Ritratto di Pry', description: 'Producer del collettivo MicLab.' },
-      { name: 'Tokyo', src: 'assets/people/producer/MICLAB-Tokyo.jpg', alt: 'Ritratto di Tokyo', description: 'Producer del collettivo MicLab.' }
+      {
+        name: 'Dave the Mojo',
+        src: 'assets/people/producer/MICLAB-Dave.jpg',
+        alt: 'Ritratto di Dave',
+        details: [
+          { label: 'Nome', value: 'Davide' },
+          { label: 'Cognome', value: 'Carli' },
+          { label: "Nome d'arte", value: 'Dave the Mojo' },
+          { label: 'Alias', value: 'The Mojomatic' },
+          { label: 'Città', value: 'Verona' }
+        ],
+        instagram: '@dave_mojomatic'
+      },
+      {
+        name: 'Drew',
+        src: 'assets/people/producer/MICLAB-Drew.jpg',
+        alt: 'Ritratto di Drew',
+        details: [
+          { label: 'Nome', value: 'Andrea' },
+          { label: 'Cognome', value: 'Vecchietti' },
+          { label: "Nome d'arte", value: 'Drew' },
+          { label: 'Città', value: 'Verona' }
+        ],
+        instagram: '@drewisdatyou'
+      },
+      {
+        name: 'Pry',
+        src: 'assets/people/producer/MICLAB-Pry.jpg',
+        alt: 'Ritratto di Pry',
+        details: [
+          { label: 'Nome', value: 'Thomas' },
+          { label: 'Cognome', value: 'Prymus' },
+          { label: "Nome d'arte", value: 'Pry' },
+          { label: 'Città', value: 'Verona' }
+        ],
+        instagram: '@motionpry'
+      },
+      {
+        name: 'Tokyo',
+        src: 'assets/people/producer/MICLAB-Tokyo.jpg',
+        alt: 'Ritratto di Tokyo',
+        details: [
+          { label: 'Nome', value: 'Federico' },
+          { label: 'Cognome', value: 'Accordini' },
+          { label: "Nome d'arte", value: 'Tokyo' },
+          { label: 'Città', value: 'Verona' }
+        ],
+        instagram: '@tokyello'
+      }
     ]
   };
 
@@ -262,6 +447,14 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   };
 
   const slideClasses = ['slide-next', 'slide-prev'];
+
+  const ensureHandle = (handle) => {
+    if (!handle) return '';
+    const trimmed = String(handle).trim();
+    if (!trimmed) return '';
+    const normalized = trimmed.startsWith('@') ? trimmed : `@${trimmed.replace(/^@+/, '')}`;
+    return normalized.replace(/\s+/g, '');
+  };
 
   const handleImageLoad = () => {
     imageEl.classList.remove('is-swapping');
@@ -332,7 +525,44 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
     imageEl.alt = entry.alt || entry.name;
     nameEl.textContent = entry.name;
-    descriptionEl.textContent = entry.description || '';
+
+    if (summaryEl) {
+      const summary = entry.summary || '';
+      summaryEl.textContent = summary;
+      summaryEl.hidden = summary.trim().length === 0;
+    }
+
+    if (metaWrap) {
+      metaWrap.innerHTML = '';
+      const details = Array.isArray(entry.details) ? entry.details : [];
+      details.filter(detail => detail && detail.value).forEach((detail) => {
+        const dt = document.createElement('dt');
+        dt.textContent = detail.label || '';
+        const dd = document.createElement('dd');
+        dd.textContent = detail.value;
+        metaWrap.append(dt, dd);
+      });
+      metaWrap.hidden = metaWrap.childElementCount === 0;
+    }
+
+    if (instagramBtn) {
+      const handleRaw = entry.instagram || '';
+      const handle = ensureHandle(handleRaw);
+      const url = handle ? `https://www.instagram.com/${handle.replace(/^@/, '')}/` : '';
+
+      if (handle && url) {
+        instagramBtn.hidden = false;
+        instagramBtn.href = url;
+        instagramBtn.setAttribute('aria-label', `Apri Instagram di ${handle}`);
+        if (instagramHandleEl) instagramHandleEl.textContent = handle;
+      } else {
+        instagramBtn.hidden = true;
+        instagramBtn.removeAttribute('aria-label');
+        instagramBtn.removeAttribute('href');
+        if (instagramHandleEl) instagramHandleEl.textContent = '';
+      }
+    }
+
     counterEl.textContent = formatCounter(currentIndex, gallery.length);
 
     if (prevBtn) prevBtn.disabled = gallery.length <= 1;
