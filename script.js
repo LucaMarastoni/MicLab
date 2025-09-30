@@ -205,6 +205,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   const triggers = document.querySelectorAll('[data-gallery]');
   if (!modal || triggers.length === 0) return;
 
+  const panel = modal.querySelector('.gallery-modal__panel');
   const imageEl = modal.querySelector('[data-gallery-image]');
   const nameEl = modal.querySelector('[data-gallery-name]');
   const descriptionEl = modal.querySelector('[data-gallery-description]');
@@ -214,8 +215,9 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   const thumbsWrap = modal.querySelector('[data-gallery-thumbs]');
   const dismissEls = modal.querySelectorAll('[data-gallery-dismiss]');
   const closeBtn = modal.querySelector('.gallery-modal__close');
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if (!imageEl || !nameEl || !descriptionEl || !counterEl || !thumbsWrap) return;
+  if (!panel || !imageEl || !nameEl || !descriptionEl || !counterEl || !thumbsWrap) return;
 
   const galleryData = {
     cantanti: [
@@ -249,6 +251,40 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   let currentGroup = null;
   let currentIndex = 0;
   let lastTrigger = null;
+  let closeTimeout = null;
+  let transitionDirection = 0;
+
+  const deactivateTrigger = (btn) => {
+    if (!btn) return;
+    btn.classList.remove('is-active');
+    btn.classList.remove('is-opening');
+    btn.setAttribute('aria-expanded', 'false');
+  };
+
+  const slideClasses = ['slide-next', 'slide-prev'];
+
+  const handleImageLoad = () => {
+    imageEl.classList.remove('is-swapping');
+    const directionToPlay = transitionDirection;
+    transitionDirection = 0;
+    if (prefersReducedMotion || directionToPlay === 0) return;
+    imageEl.classList.remove(...slideClasses);
+    void imageEl.offsetWidth;
+    imageEl.classList.add(directionToPlay > 0 ? 'slide-next' : 'slide-prev');
+  };
+
+  imageEl.addEventListener('load', () => {
+    requestAnimationFrame(handleImageLoad);
+  });
+
+  if (!prefersReducedMotion) {
+    imageEl.addEventListener('animationend', (event) => {
+      if (event.target !== imageEl) return;
+      if (slideClasses.some(cls => imageEl.classList.contains(cls))) {
+        imageEl.classList.remove(...slideClasses);
+      }
+    });
+  }
 
   function getCurrentGallery(){
     return galleryData[currentGroup] || null;
@@ -259,6 +295,17 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
     return `${String(index + 1).padStart(digits, '0')} / ${String(total).padStart(digits, '0')}`;
   }
 
+  function ensureActiveThumbInView(){
+    const activeThumb = thumbsWrap.querySelector('.gallery-thumb.is-active');
+    if (!activeThumb || typeof activeThumb.scrollIntoView !== 'function') return;
+    const behavior = prefersReducedMotion ? 'auto' : 'smooth';
+    try {
+      activeThumb.scrollIntoView({ block: 'nearest', inline: 'center', behavior });
+    } catch {
+      activeThumb.scrollIntoView();
+    }
+  }
+
   function updateThumbHighlight(){
     const thumbs = thumbsWrap.querySelectorAll('.gallery-thumb');
     thumbs.forEach((thumb, idx) => {
@@ -266,6 +313,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
       thumb.classList.toggle('is-active', isActive);
       thumb.setAttribute('aria-current', isActive ? 'true' : 'false');
     });
+    ensureActiveThumbInView();
   }
 
   function updateView(){
@@ -276,8 +324,12 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
     const src = toSrc(entry.src);
     if (imageEl.getAttribute('src') !== src) {
+      if (!prefersReducedMotion) imageEl.classList.add('is-swapping');
       imageEl.setAttribute('src', src);
+    } else {
+      imageEl.classList.remove('is-swapping');
     }
+
     imageEl.alt = entry.alt || entry.name;
     nameEl.textContent = entry.name;
     descriptionEl.textContent = entry.description || '';
@@ -293,10 +345,27 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
     const gallery = getCurrentGallery();
     if (!gallery || gallery.length === 0) return;
     if (gallery.length === 1) {
+      transitionDirection = 0;
       currentIndex = 0;
     } else {
       const total = gallery.length;
-      currentIndex = ((index % total) + total) % total;
+      const prevIndex = currentIndex;
+      const normalized = ((index % total) + total) % total;
+      currentIndex = normalized;
+
+      if (normalized === prevIndex) {
+        transitionDirection = 0;
+      } else {
+        const forward = (prevIndex + 1) % total;
+        const backward = (prevIndex - 1 + total) % total;
+        if (normalized === forward) {
+          transitionDirection = 1;
+        } else if (normalized === backward) {
+          transitionDirection = -1;
+        } else {
+          transitionDirection = normalized > prevIndex ? 1 : -1;
+        }
+      }
     }
     updateView();
   }
@@ -317,28 +386,20 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
       btn.appendChild(img);
       btn.addEventListener('click', () => {
-        currentIndex = index;
-        updateView();
+        goTo(index);
       });
 
       fragment.appendChild(btn);
     });
 
     thumbsWrap.appendChild(fragment);
-    updateThumbHighlight();
-  }
-
-  function closeGallery(){
-    if (modal.hidden) return;
-    modal.hidden = true;
-    document.body.classList.remove('no-scroll');
-    window.removeEventListener('keydown', onKeydown);
-    if (lastTrigger) {
-      lastTrigger.setAttribute('aria-expanded', 'false');
-      if (typeof lastTrigger.focus === 'function') {
-        lastTrigger.focus();
-      }
+    if (typeof thumbsWrap.scrollTo === 'function') {
+      thumbsWrap.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    } else {
+      thumbsWrap.scrollTop = 0;
+      thumbsWrap.scrollLeft = 0;
     }
+    updateThumbHighlight();
   }
 
   function onKeydown(event){
@@ -355,26 +416,100 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
     }
   }
 
+  function closeGallery(){
+    if (modal.hidden || modal.classList.contains('is-closing')) return;
+
+    modal.classList.remove('is-active');
+    modal.classList.add('is-closing');
+    document.body.classList.remove('no-scroll');
+    window.removeEventListener('keydown', onKeydown);
+
+    const triggerToFocus = lastTrigger;
+    deactivateTrigger(triggerToFocus);
+
+    const finalize = () => {
+      modal.hidden = true;
+      modal.classList.remove('is-closing');
+      closeTimeout = null;
+      lastTrigger = triggerToFocus || null;
+      if (triggerToFocus && typeof triggerToFocus.focus === 'function') {
+        try {
+          triggerToFocus.focus({ preventScroll: true });
+        } catch {
+          triggerToFocus.focus();
+        }
+      }
+    };
+
+    if (!prefersReducedMotion) {
+      const onTransitionEnd = (event) => {
+        if (event.target !== modal && event.target !== panel) return;
+        modal.removeEventListener('transitionend', onTransitionEnd);
+        finalize();
+      };
+      modal.addEventListener('transitionend', onTransitionEnd);
+      closeTimeout = window.setTimeout(() => {
+        modal.removeEventListener('transitionend', onTransitionEnd);
+        finalize();
+      }, 320);
+    } else {
+      finalize();
+    }
+  }
+
   function openGallery(group, trigger){
     const gallery = galleryData[group];
     if (!gallery || gallery.length === 0) return;
 
+    if (closeTimeout) {
+      clearTimeout(closeTimeout);
+      closeTimeout = null;
+    }
+
+    if (trigger && trigger !== lastTrigger) {
+      deactivateTrigger(lastTrigger);
+    }
+
     currentGroup = group;
     currentIndex = 0;
-    lastTrigger = trigger || null;
+    transitionDirection = 0;
+    lastTrigger = trigger || lastTrigger;
 
-    if (trigger) trigger.setAttribute('aria-expanded', 'true');
+    if (panel) panel.scrollTop = 0;
+    if (thumbsWrap) thumbsWrap.scrollLeft = 0;
+
+    if (trigger) {
+      trigger.setAttribute('aria-expanded', 'true');
+      trigger.classList.add('is-active');
+      if (!prefersReducedMotion) {
+        trigger.classList.add('is-opening');
+        window.setTimeout(() => trigger.classList.remove('is-opening'), 520);
+      } else {
+        trigger.classList.remove('is-opening');
+      }
+    }
 
     renderThumbs(gallery);
     updateView();
 
     modal.hidden = false;
-    modal.scrollTop = 0;
+    modal.classList.remove('is-closing');
     document.body.classList.add('no-scroll');
     window.addEventListener('keydown', onKeydown);
 
-    if (closeBtn) {
-      closeBtn.focus();
+    const activate = () => modal.classList.add('is-active');
+    if (!prefersReducedMotion) {
+      requestAnimationFrame(activate);
+    } else {
+      activate();
+    }
+
+    if (closeBtn && typeof closeBtn.focus === 'function') {
+      try {
+        closeBtn.focus({ preventScroll: true });
+      } catch {
+        closeBtn.focus();
+      }
     }
   }
 

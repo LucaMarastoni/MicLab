@@ -37,20 +37,41 @@
   </header>
 
   <main>
-    <section class="artists-hero" id="artisti">
-      <div class="container container--narrow">
-        <h1 class="section-title">Artisti</h1>
-        <p class="artists-hero__lead">
-          Seleziona una cartella per conoscere i performer, le voci e i producer che danno vita alle MicLab Live Session.
-        </p>
+    <section id="artisti" class="hero hero--artists">
+      <video
+        id="heroVideo"
+        class="hero__video"
+        playsinline
+        muted
+        loop
+        autoplay
+        preload="metadata"
+        poster="assets/poster.jpg"
+        data-src-sm="assets/hero-480.mp4"
+        data-src-md="assets/hero-720.mp4"
+        data-src-lg="assets/hero-1080.mp4"
+        aria-label="Sequenza video degli artisti MicLab">
+      </video>
+
+      <div class="hero__overlay hero__overlay--artists">
+        <div class="hero__content hero__content--artists">
+          <p class="hero__eyebrow">MicLab Live Session</p>
+          <h1 class="hero__title">Gli Artisti</h1>
+          <p class="hero__lead">
+            Sedici voci, producer e musicisti pronti a sporcarsi le mani.
+            Entra nelle cartelle e scopri chi dà forma al laboratorio sonoro di MicLab.
+          </p>
+        </div>
       </div>
+
+      <button class="play-overlay" id="playOverlay" hidden aria-label="Avvia video">►</button>
     </section>
 
     <section class="artists-folders" aria-labelledby="foldersTitle">
       <div class="container">
         <div class="folders__head">
           <h2 id="foldersTitle" class="section-title">Esplora il roster</h2>
-          <p class="folders__desc">Quattro mondi creativi: apri una cartella per sfogliare le presentazioni in alta qualità.</p>
+          <p class="folders__desc">Quattro mondi creativi: apri una cartella per sfogliare gli artisti.</p>
         </div>
 
         <div class="folder-grid" role="list">
