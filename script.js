@@ -2,115 +2,148 @@
 const menuBtn = document.getElementById('menuToggle');
 const menu = document.getElementById('siteMenu');
 
-function toggleMenu() {
-  const isOpen = menuBtn.getAttribute('aria-expanded') === 'true';
-  menuBtn.setAttribute('aria-expanded', String(!isOpen));
-  if (isOpen) {
-    menu.classList.remove('open');
-    setTimeout(() => { menu.hidden = true; }, 250);
-  } else {
-    menu.hidden = false;
-    void menu.offsetHeight; // reflow
-    menu.classList.add('open');
-  }
+if (menuBtn && menu) {
+  const toggleMenu = () => {
+    const isOpen = menuBtn.getAttribute('aria-expanded') === 'true';
+    menuBtn.setAttribute('aria-expanded', String(!isOpen));
+    if (isOpen) {
+      menu.classList.remove('open');
+      setTimeout(() => { menu.hidden = true; }, 250);
+    } else {
+      menu.hidden = false;
+      void menu.offsetHeight; // reflow
+      menu.classList.add('open');
+    }
+  };
+
+  menuBtn.addEventListener('click', toggleMenu);
+  menu.addEventListener('click', (e) => {
+    if (e.target.closest('a')) toggleMenu();
+  });
 }
-menuBtn.addEventListener('click', toggleMenu);
-menu.addEventListener('click', (e) => { if (e.target.closest('a')) toggleMenu(); });
 
 // HERO VIDEO REATTIVO
 const heroVideo = document.getElementById('heroVideo');
-const playOverlay = document.getElementById('playOverlay');
 
-function pickHeroSrc() {
-  const w = window.innerWidth;
-  if (w >= 1000) return heroVideo.dataset.srcLg;
-  if (w >= 560) return heroVideo.dataset.srcMd;
-  return heroVideo.dataset.srcSm;
-}
+if (heroVideo) {
+  const playOverlay = document.getElementById('playOverlay');
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let currentBucket = null;
+  let resizeFrame = null;
 
-let currentBucket = null;
-function setHeroSource() {
-  const src = pickHeroSrc();
-  const bucket = (src === heroVideo.dataset.srcLg) ? 'lg'
-               : (src === heroVideo.dataset.srcMd) ? 'md' : 'sm';
-  if (bucket !== currentBucket) {
-    currentBucket = bucket;
-    const wasPlaying = !heroVideo.paused;
-    heroVideo.src = src;
-    heroVideo.load();
-    (wasPlaying ? heroVideo.play() : heroVideo.play()).then(() => {
-      playOverlay.hidden = true;
-    }).catch(() => {
-      playOverlay.hidden = false;
+  const attemptPlay = () => heroVideo.play()
+    .then(() => { if (playOverlay) playOverlay.hidden = true; })
+    .catch(() => { if (playOverlay) playOverlay.hidden = false; });
+
+  const pickHeroSrc = () => {
+    const w = window.innerWidth;
+    if (w >= 1000) return heroVideo.dataset.srcLg;
+    if (w >= 560) return heroVideo.dataset.srcMd;
+    return heroVideo.dataset.srcSm;
+  };
+
+  const setHeroSource = (force = false) => {
+    const src = pickHeroSrc();
+    if (!src) return;
+    const bucket = (src === heroVideo.dataset.srcLg) ? 'lg'
+                 : (src === heroVideo.dataset.srcMd) ? 'md' : 'sm';
+    const currentSrc = heroVideo.getAttribute('src');
+    if (force || bucket !== currentBucket || currentSrc !== src) {
+      const shouldResume = !heroVideo.paused && !heroVideo.ended;
+      currentBucket = bucket;
+      heroVideo.setAttribute('src', src);
+      heroVideo.load();
+      if (shouldResume && !prefersReducedMotion) {
+        attemptPlay();
+      }
+    }
+  };
+
+  window.addEventListener('resize', () => {
+    if (resizeFrame) cancelAnimationFrame(resizeFrame);
+    resizeFrame = requestAnimationFrame(() => setHeroSource(false));
+  });
+  window.addEventListener('orientationchange', () => setHeroSource(false));
+
+  heroVideo.addEventListener('canplay', () => {
+    heroVideo.classList.add('is-ready');
+  });
+
+  if (playOverlay) {
+    playOverlay.addEventListener('click', () => {
+      attemptPlay();
     });
   }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      heroVideo.pause();
+    } else if (!prefersReducedMotion) {
+      attemptPlay();
+    }
+  });
+
+  if (prefersReducedMotion) {
+    heroVideo.removeAttribute('autoplay');
+    heroVideo.pause();
+    if (playOverlay) playOverlay.hidden = false;
+  }
+
+  setHeroSource(true);
+  if (!prefersReducedMotion) {
+    attemptPlay();
+  }
 }
-
-let rAF = null;
-window.addEventListener('resize', () => {
-  if (rAF) cancelAnimationFrame(rAF);
-  rAF = requestAnimationFrame(setHeroSource);
-});
-window.addEventListener('orientationchange', setHeroSource);
-
-heroVideo.addEventListener('canplay', () => {
-  heroVideo.classList.add('is-ready');
-});
-
-playOverlay.addEventListener('click', () => {
-  heroVideo.play().then(() => { playOverlay.hidden = true; });
-});
-
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) heroVideo.pause();
-  else heroVideo.play().catch(() => {});
-});
-
-const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-if (prefersReduced) {
-  heroVideo.removeAttribute('autoplay');
-  heroVideo.pause();
-}
-
-setHeroSource();
 
 // CAROSELLO
 const rail = document.querySelector('[data-carousel]');
 const prevBtn = document.querySelector('[data-prev]');
 const nextBtn = document.querySelector('[data-next]');
 
-function updateNavButtons() {
-  const maxScroll = rail.scrollWidth - rail.clientWidth - 1;
-  prevBtn.disabled = rail.scrollLeft <= 0;
-  nextBtn.disabled = rail.scrollLeft >= maxScroll;
-}
-function scrollByAmount(dir = 1) {
-  const amount = Math.max(240, Math.floor(rail.clientWidth * 0.8));
-  rail.scrollBy({ left: dir * amount, behavior: 'smooth' });
-}
-prevBtn.addEventListener('click', () => scrollByAmount(-1));
-nextBtn.addEventListener('click', () => scrollByAmount(1));
-rail.addEventListener('scroll', updateNavButtons);
-window.addEventListener('load', updateNavButtons);
-window.addEventListener('resize', updateNavButtons);
+if (rail && prevBtn && nextBtn) {
+  const updateNavButtons = () => {
+    const maxScroll = rail.scrollWidth - rail.clientWidth - 1;
+    prevBtn.disabled = rail.scrollLeft <= 0;
+    nextBtn.disabled = rail.scrollLeft >= maxScroll;
+  };
 
-// Drag to scroll
-let isDown = false, startX = 0, startScroll = 0;
-rail.addEventListener('pointerdown', (e) => {
-  isDown = true;
-  rail.setPointerCapture(e.pointerId);
-  startX = e.clientX;
-  startScroll = rail.scrollLeft;
-  rail.style.cursor = 'grabbing';
-});
-rail.addEventListener('pointermove', (e) => {
-  if (!isDown) return;
-  const dx = e.clientX - startX;
-  rail.scrollLeft = startScroll - dx;
-});
-['pointerup','pointercancel','pointerleave'].forEach(evt => {
-  rail.addEventListener(evt, () => { isDown = false; rail.style.cursor = ''; });
-});
+  const scrollByAmount = (dir = 1) => {
+    const amount = Math.max(240, Math.floor(rail.clientWidth * 0.8));
+    rail.scrollBy({ left: dir * amount, behavior: 'smooth' });
+  };
+
+  prevBtn.addEventListener('click', () => scrollByAmount(-1));
+  nextBtn.addEventListener('click', () => scrollByAmount(1));
+  rail.addEventListener('scroll', updateNavButtons);
+  window.addEventListener('load', updateNavButtons);
+  window.addEventListener('resize', updateNavButtons);
+
+  // Drag to scroll
+  let isDown = false;
+  let startX = 0;
+  let startScroll = 0;
+
+  rail.addEventListener('pointerdown', (e) => {
+    isDown = true;
+    rail.setPointerCapture(e.pointerId);
+    startX = e.clientX;
+    startScroll = rail.scrollLeft;
+    rail.style.cursor = 'grabbing';
+  });
+
+  rail.addEventListener('pointermove', (e) => {
+    if (!isDown) return;
+    const dx = e.clientX - startX;
+    rail.scrollLeft = startScroll - dx;
+  });
+
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach((evt) => {
+    rail.addEventListener(evt, () => {
+      isDown = false;
+      rail.style.cursor = '';
+    });
+  });
+}
 
 /* ===== REVEAL ON SCROLL + ROTATORE ===== */
 
@@ -164,6 +197,197 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) clearInterval(interval);
   }, { once: true });
+})();
+
+/* ===== ARTISTS GALLERY ===== */
+(function setupArtistGalleries(){
+  const modal = document.querySelector('[data-gallery-modal]');
+  const triggers = document.querySelectorAll('[data-gallery]');
+  if (!modal || triggers.length === 0) return;
+
+  const imageEl = modal.querySelector('[data-gallery-image]');
+  const nameEl = modal.querySelector('[data-gallery-name]');
+  const descriptionEl = modal.querySelector('[data-gallery-description]');
+  const counterEl = modal.querySelector('[data-gallery-counter]');
+  const prevBtn = modal.querySelector('[data-gallery-prev]');
+  const nextBtn = modal.querySelector('[data-gallery-next]');
+  const thumbsWrap = modal.querySelector('[data-gallery-thumbs]');
+  const dismissEls = modal.querySelectorAll('[data-gallery-dismiss]');
+  const closeBtn = modal.querySelector('.gallery-modal__close');
+
+  if (!imageEl || !nameEl || !descriptionEl || !counterEl || !thumbsWrap) return;
+
+  const galleryData = {
+    cantanti: [
+      { name: 'Ernesto Alemà', src: 'assets/people/cantanti/MICLAB-Ernesto Alemà .jpg', alt: 'Ritratto di Ernesto Alemà', description: 'Cantante del collettivo MicLab.' },
+      { name: 'Francesca', src: 'assets/people/cantanti/MICLAB-Francesca.jpg', alt: 'Ritratto di Francesca', description: 'Cantante del collettivo MicLab.' },
+      { name: 'Sesto', src: 'assets/people/cantanti/MICLAB-Sesto.jpg', alt: 'Ritratto di Sesto', description: 'Cantante del collettivo MicLab.' },
+      { name: 'Sole', src: 'assets/people/cantanti/MICLAB-Sole.jpg', alt: 'Ritratto di Sole', description: 'Cantante del collettivo MicLab.' }
+    ],
+    rapper: [
+      { name: 'Blackmill', src: 'assets/people/rapper/MICLAB-Blackmill.jpg', alt: 'Ritratto di Blackmill', description: 'Rapper del collettivo MicLab.' },
+      { name: 'JoeJoe', src: 'assets/people/rapper/MICLAB-JoeJoe.jpg', alt: 'Ritratto di JoeJoe', description: 'Rapper del collettivo MicLab.' },
+      { name: 'Numb', src: 'assets/people/rapper/MICLAB-Numb.jpg', alt: 'Ritratto di Numb', description: 'Rapper del collettivo MicLab.' },
+      { name: 'Ozymandias', src: 'assets/people/rapper/MICLAB-Ozymandias.jpg', alt: 'Ritratto di Ozymandias', description: 'Rapper del collettivo MicLab.' }
+    ],
+    musicisti: [
+      { name: 'Sbre', src: 'assets/people/musicisti/MICLAB-Sbre.jpg', alt: 'Ritratto di Sbre', description: 'Musicista del collettivo MicLab.' },
+      { name: 'Simone Rodriquez', src: 'assets/people/musicisti/MICLAB-Simone Rodriquez.jpg', alt: 'Ritratto di Simone Rodriquez', description: 'Musicista del collettivo MicLab.' },
+      { name: 'Spettrosereno', src: 'assets/people/musicisti/MICLAB-Spettrosereno.jpg', alt: 'Ritratto di Spettrosereno', description: 'Musicista del collettivo MicLab.' },
+      { name: 'Vamnto', src: 'assets/people/musicisti/MICLAB-Vamnto .jpg', alt: 'Ritratto di Vamnto', description: 'Musicista del collettivo MicLab.' }
+    ],
+    producer: [
+      { name: 'Dave', src: 'assets/people/producer/MICLAB-Dave.jpg', alt: 'Ritratto di Dave', description: 'Producer del collettivo MicLab.' },
+      { name: 'Drew', src: 'assets/people/producer/MICLAB-Drew.jpg', alt: 'Ritratto di Drew', description: 'Producer del collettivo MicLab.' },
+      { name: 'Pry', src: 'assets/people/producer/MICLAB-Pry.jpg', alt: 'Ritratto di Pry', description: 'Producer del collettivo MicLab.' },
+      { name: 'Tokyo', src: 'assets/people/producer/MICLAB-Tokyo.jpg', alt: 'Ritratto di Tokyo', description: 'Producer del collettivo MicLab.' }
+    ]
+  };
+
+  const toSrc = (path) => encodeURI(path);
+
+  let currentGroup = null;
+  let currentIndex = 0;
+  let lastTrigger = null;
+
+  function getCurrentGallery(){
+    return galleryData[currentGroup] || null;
+  }
+
+  function formatCounter(index, total){
+    const digits = Math.max(2, String(total).length);
+    return `${String(index + 1).padStart(digits, '0')} / ${String(total).padStart(digits, '0')}`;
+  }
+
+  function updateThumbHighlight(){
+    const thumbs = thumbsWrap.querySelectorAll('.gallery-thumb');
+    thumbs.forEach((thumb, idx) => {
+      const isActive = idx === currentIndex;
+      thumb.classList.toggle('is-active', isActive);
+      thumb.setAttribute('aria-current', isActive ? 'true' : 'false');
+    });
+  }
+
+  function updateView(){
+    const gallery = getCurrentGallery();
+    if (!gallery || gallery.length === 0) return;
+    const entry = gallery[currentIndex];
+    if (!entry) return;
+
+    const src = toSrc(entry.src);
+    if (imageEl.getAttribute('src') !== src) {
+      imageEl.setAttribute('src', src);
+    }
+    imageEl.alt = entry.alt || entry.name;
+    nameEl.textContent = entry.name;
+    descriptionEl.textContent = entry.description || '';
+    counterEl.textContent = formatCounter(currentIndex, gallery.length);
+
+    if (prevBtn) prevBtn.disabled = gallery.length <= 1;
+    if (nextBtn) nextBtn.disabled = gallery.length <= 1;
+
+    updateThumbHighlight();
+  }
+
+  function goTo(index){
+    const gallery = getCurrentGallery();
+    if (!gallery || gallery.length === 0) return;
+    if (gallery.length === 1) {
+      currentIndex = 0;
+    } else {
+      const total = gallery.length;
+      currentIndex = ((index % total) + total) % total;
+    }
+    updateView();
+  }
+
+  function renderThumbs(entries){
+    thumbsWrap.innerHTML = '';
+    const fragment = document.createDocumentFragment();
+
+    entries.forEach((entry, index) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'gallery-thumb';
+      btn.setAttribute('aria-label', entry.name);
+
+      const img = document.createElement('img');
+      img.src = toSrc(entry.src);
+      img.alt = `Anteprima di ${entry.name}`;
+
+      btn.appendChild(img);
+      btn.addEventListener('click', () => {
+        currentIndex = index;
+        updateView();
+      });
+
+      fragment.appendChild(btn);
+    });
+
+    thumbsWrap.appendChild(fragment);
+    updateThumbHighlight();
+  }
+
+  function closeGallery(){
+    if (modal.hidden) return;
+    modal.hidden = true;
+    document.body.classList.remove('no-scroll');
+    window.removeEventListener('keydown', onKeydown);
+    if (lastTrigger) {
+      lastTrigger.setAttribute('aria-expanded', 'false');
+      if (typeof lastTrigger.focus === 'function') {
+        lastTrigger.focus();
+      }
+    }
+  }
+
+  function onKeydown(event){
+    if (modal.hidden) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeGallery();
+    } else if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      goTo(currentIndex + 1);
+    } else if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      goTo(currentIndex - 1);
+    }
+  }
+
+  function openGallery(group, trigger){
+    const gallery = galleryData[group];
+    if (!gallery || gallery.length === 0) return;
+
+    currentGroup = group;
+    currentIndex = 0;
+    lastTrigger = trigger || null;
+
+    if (trigger) trigger.setAttribute('aria-expanded', 'true');
+
+    renderThumbs(gallery);
+    updateView();
+
+    modal.hidden = false;
+    modal.scrollTop = 0;
+    document.body.classList.add('no-scroll');
+    window.addEventListener('keydown', onKeydown);
+
+    if (closeBtn) {
+      closeBtn.focus();
+    }
+  }
+
+  triggers.forEach((trigger) => {
+    trigger.addEventListener('click', () => openGallery(trigger.dataset.gallery, trigger));
+  });
+
+  if (prevBtn) prevBtn.addEventListener('click', () => goTo(currentIndex - 1));
+  if (nextBtn) nextBtn.addEventListener('click', () => goTo(currentIndex + 1));
+
+  dismissEls.forEach((el) => {
+    el.addEventListener('click', closeGallery);
+  });
 })();
 
 /* ===== PRIVACY POLICY MODAL ===== */
