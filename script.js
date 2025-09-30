@@ -330,7 +330,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
       },
       {
         name: 'Simone Rodriquez',
-        src: 'assets/people/musicisti/MICLAB-Simone Rodriquez.jpeg',
+        src: 'assets/people/musicisti/MICLAB-Simone Rodriquez.jpg',
         alt: 'Ritratto di Simone Rodriquez',
         details: [
           { label: 'Nome e Cognome', value: 'Simone Rodriquez' },
