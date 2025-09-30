@@ -216,8 +216,6 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   const thumbsWrap = modal.querySelector('[data-gallery-thumbs]');
   const dismissEls = modal.querySelectorAll('[data-gallery-dismiss]');
   const closeBtn = modal.querySelector('.gallery-modal__close');
-  const instagramBtn = modal.querySelector('[data-gallery-instagram]');
-  const instagramHandleEl = modal.querySelector('[data-gallery-instagram-handle]');
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if (!panel || !imageEl || !nameEl || !counterEl || !thumbsWrap) return;
@@ -534,33 +532,57 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
     if (metaWrap) {
       metaWrap.innerHTML = '';
-      const details = Array.isArray(entry.details) ? entry.details : [];
+      const details = Array.isArray(entry.details) ? [...entry.details] : [];
+
+      if (entry.instagram) {
+        const handle = ensureHandle(entry.instagram);
+        if (handle) {
+          details.push({
+            label: 'Instagram',
+            value: handle,
+            url: `https://www.instagram.com/${handle.replace(/^@/, '')}/`
+          });
+        }
+      }
+
       details.filter(detail => detail && detail.value).forEach((detail) => {
-        const dt = document.createElement('dt');
-        dt.textContent = detail.label || '';
-        const dd = document.createElement('dd');
-        dd.textContent = detail.value;
-        metaWrap.append(dt, dd);
+        const label = detail.label || '';
+        if (/^nome d'arte$/i.test(label.trim())) return;
+        const value = String(detail.value).trim();
+        if (!value) return;
+
+        const normalizedLabel = label.trim().toLowerCase();
+        let linkHref = detail.url || '';
+        if (!linkHref && (/instagram|\big\b/.test(normalizedLabel) || value.startsWith('@'))){
+          const handleLink = ensureHandle(value);
+          if (handleLink) linkHref = `https://www.instagram.com/${handleLink.replace(/^@/, '')}/`;
+        }
+
+        const item = document.createElement('div');
+        item.className = 'gallery-meta-item';
+
+        const labelEl = document.createElement('span');
+        labelEl.className = 'gallery-meta-item__label';
+        labelEl.textContent = label;
+
+        const valueEl = document.createElement('span');
+        valueEl.className = 'gallery-meta-item__value';
+        if (linkHref) {
+          const link = document.createElement('a');
+          link.href = linkHref;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.textContent = value;
+          link.setAttribute('aria-label', `Apri ${label} di ${entry.name}`);
+          valueEl.append(link);
+        } else {
+          valueEl.textContent = value;
+        }
+
+        item.append(labelEl, valueEl);
+        metaWrap.append(item);
       });
       metaWrap.hidden = metaWrap.childElementCount === 0;
-    }
-
-    if (instagramBtn) {
-      const handleRaw = entry.instagram || '';
-      const handle = ensureHandle(handleRaw);
-      const url = handle ? `https://www.instagram.com/${handle.replace(/^@/, '')}/` : '';
-
-      if (handle && url) {
-        instagramBtn.hidden = false;
-        instagramBtn.href = url;
-        instagramBtn.setAttribute('aria-label', `Apri Instagram di ${handle}`);
-        if (instagramHandleEl) instagramHandleEl.textContent = handle;
-      } else {
-        instagramBtn.hidden = true;
-        instagramBtn.removeAttribute('aria-label');
-        instagramBtn.removeAttribute('href');
-        if (instagramHandleEl) instagramHandleEl.textContent = '';
-      }
     }
 
     counterEl.textContent = formatCounter(currentIndex, gallery.length);
