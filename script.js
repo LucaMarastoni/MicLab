@@ -751,7 +751,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
       metaWrap.innerHTML = '';
 
       const rawDetails = Array.isArray(entry.details) ? entry.details : [];
-      const displayItems = [];
+      const detailsToDisplay = [];
       let firstName = '';
       let lastName = '';
 
@@ -765,76 +765,74 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
         if (label === 'nome') { firstName = value; return; }
         if (label === 'cognome') { lastName = value; return; }
 
-        displayItems.push({ value, label, url: detail.url });
+        detailsToDisplay.push({ value, label: detail.label, url: detail.url });
       });
 
       const fullName = [firstName, lastName].filter(Boolean).join(' ').trim();
-      if (fullName) displayItems.unshift({ value: fullName, label: 'nome e cognome' });
+      if (fullName) detailsToDisplay.unshift({ value: fullName, label: 'Nome e cognome' });
 
-      const handle = ensureHandle(entry.instagram);
-      if (handle) {
-        displayItems.push({
-          value: handle,
-          label: 'instagram',
-          url: `https://www.instagram.com/${handle.replace(/^@/, '')}/`
+      const instaHandle = ensureHandle(entry.instagram);
+      if (instaHandle) {
+        detailsToDisplay.push({
+          value: instaHandle,
+          label: 'Instagram',
+          url: `https://www.instagram.com/${instaHandle.replace(/^@/, '')}/`
         });
       }
 
-      displayItems.forEach((detail) => {
+      const segments = detailsToDisplay.reduce((acc, detail) => {
         const rawValue = String(detail.value || '').trim();
-        if (!rawValue) return;
+        if (!rawValue) return acc;
 
-        const normalizedLabel = String(detail.label || '').trim().toLowerCase();
-        const looksLikeHandle = normalizedLabel.includes('instagram')
-          || normalizedLabel.includes('ig')
-          || rawValue.startsWith('@');
+        const labelText = (detail.label || '').trim();
+        const looksLikeHandle = rawValue.startsWith('@')
+          || labelText.toLowerCase().includes('instagram')
+          || labelText.toLowerCase().includes('ig');
 
-        let linkHref = detail.url || '';
-        if (!linkHref && looksLikeHandle){
-          const handleLink = ensureHandle(rawValue);
-          if (handleLink) linkHref = `https://www.instagram.com/${handleLink.replace(/^@/, '')}/`;
+        const href = detail.url || (looksLikeHandle
+          ? `https://www.instagram.com/${rawValue.replace(/^@/, '')}/`
+          : '');
+
+        const span = document.createElement('span');
+
+        if (labelText) {
+          const strong = document.createElement('strong');
+          strong.textContent = `${labelText.trim().replace(/:+$/, '')}:`;
+          span.append(strong, document.createTextNode(' '));
         }
 
-        if (linkHref) {
-          const anchor = document.createElement('a');
-          anchor.href = linkHref;
-          anchor.target = '_blank';
-          anchor.rel = 'noopener noreferrer';
-          anchor.className = 'gallery-meta-item gallery-meta-link';
-
-          if (looksLikeHandle) {
-            anchor.classList.add('gallery-meta-link--icon');
-            const icon = document.createElement('img');
-            icon.src = 'assets/insta-logo.png';
-            icon.alt = '';
-            icon.setAttribute('aria-hidden', 'true');
-            icon.classList.add('gallery-meta-icon');
-            anchor.append(icon);
-
-            const sr = document.createElement('span');
-            sr.className = 'sr-only';
-            sr.textContent = `Apri Instagram di ${entry.name}`;
-            anchor.append(sr);
-          } else {
-            anchor.textContent = rawValue;
-          }
-
-          if (!anchor.hasAttribute('aria-label')) {
-            anchor.setAttribute('aria-label', detail.label ? `Apri ${detail.label} di ${entry.name}` : `Apri profilo di ${entry.name}`);
-          }
-
-          metaWrap.append(anchor);
+        if (href) {
+          const link = document.createElement('a');
+          link.href = href;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.textContent = rawValue;
+          link.className = 'gallery-meta-link-inline';
+          link.setAttribute('aria-label', `Apri ${labelText || 'profilo'} di ${entry.name}`);
+          span.append(link);
         } else {
-          const chip = document.createElement('div');
-          chip.className = 'gallery-meta-item';
-          chip.textContent = rawValue;
-          metaWrap.append(chip);
+          span.append(document.createTextNode(rawValue));
         }
-      });
 
-      metaWrap.hidden = metaWrap.childElementCount === 0;
+        acc.push(span);
+        return acc;
+      }, []);
+
+      if (segments.length > 0) {
+        const paragraph = document.createElement('p');
+        paragraph.className = 'gallery-meta-text';
+        segments.forEach((segment, index) => {
+          paragraph.append(segment);
+          if (index < segments.length - 1) {
+            paragraph.append(document.createTextNode(' • '));
+          }
+        });
+        metaWrap.append(paragraph);
+        metaWrap.hidden = false;
+      } else {
+        metaWrap.hidden = true;
+      }
     }
-
     counterEl.textContent = formatCounter(currentIndex, gallery.length);
 
     if (prevBtn) prevBtn.disabled = gallery.length <= 1;
