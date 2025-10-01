@@ -195,6 +195,30 @@ body{
 .play-overlay:active{ transform: scale(.96); }
 .play-overlay:hover{ background: rgba(255,255,255,.06); }
 
+.audio-toggle{
+  position: absolute;
+  right: clamp(16px, 4vw, 28px);
+  bottom: clamp(16px, 4vw, 28px);
+  width: clamp(44px, 10vw, 54px);
+  height: clamp(44px, 10vw, 54px);
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.4);
+  background: rgba(0,0,0,.55);
+  color: var(--fg);
+  font-size: clamp(20px, 5vw, 24px);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  z-index: 3;
+  transition: transform .2s var(--ease), background .2s var(--ease), border-color .2s var(--ease);
+}
+.audio-toggle:hover{ background: rgba(255,255,255,.12); }
+.audio-toggle:active{ transform: scale(.94); }
+.audio-toggle:focus-visible{
+  outline: 2px solid rgba(255,255,255,.8);
+  outline-offset: 3px;
+}
+
 /* =========================
    CAROSELLO
    ========================= */
