@@ -1306,10 +1306,13 @@ body.policy-open{ overflow: hidden; }
 }
 .founder-card__photo{
   width: 100%;
-  height: auto;
+  max-height: clamp(320px, 60vw, 480px);
   border-radius: 18px;
   box-shadow: 0 20px 36px rgba(0,0,0,.32);
   display: block;
+  object-fit: contain;
+  background: rgba(0,0,0,.35);
+  margin-inline: auto;
 }
 .founder-card__body{
   display: grid;
