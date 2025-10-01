@@ -1417,6 +1417,61 @@ body.policy-open{ overflow: hidden; }
 .staff-card__name{ font-size: 16px; letter-spacing: .02em; }
 .staff-card__role{ color: var(--muted); font-size: 13px; letter-spacing: .12em; text-transform: uppercase; }
 
+.staff-card--luca{
+  position: relative;
+  overflow: hidden;
+}
+.staff-card--luca .staff-card__name,
+.staff-card--luca .staff-card__role{
+  color: var(--fg);
+  background: none;
+  -webkit-text-fill-color: inherit;
+}
+.staff-card--luca::before,
+.staff-card--luca::after{
+  content:"";
+  position:absolute;
+  inset:-25%;
+  pointer-events:none;
+  opacity:0;
+}
+.staff-card--luca.is-active{
+  animation: lucaGlow 1.4s ease-in-out;
+}
+.staff-card--luca.is-active .staff-card__photo{
+  animation: lucaPhotoPop 1s var(--ease) forwards;
+}
+.staff-card--luca.is-active .staff-card__name{
+  background: linear-gradient(135deg, #8ab8ff, #ff9ce6, #ffd06a);
+  background-size: 200% 200%;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: lucaText 1.4s ease-out;
+}
+.staff-card--luca.is-active .staff-card__role{
+  background: linear-gradient(135deg, rgba(255,255,255,.9), rgba(150,190,255,.85));
+  background-size: 180% 180%;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: lucaText 1.4s ease-out;
+}
+.staff-card--luca.is-active::before{
+  opacity:1;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,.7) 0 14%, transparent 46%),
+    radial-gradient(circle at 78% 28%, rgba(134,192,255,.55) 0 12%, transparent 48%),
+    radial-gradient(circle at 48% 80%, rgba(255,145,235,.5) 0 18%, transparent 52%);
+  animation: lucaSparkle 1.1s ease-out forwards;
+}
+.staff-card--luca.is-active::after{
+  opacity:1;
+  background: conic-gradient(from 120deg, rgba(130,170,255,.25), rgba(255,255,255,.0) 45%, rgba(255,140,220,.3) 75%, rgba(130,170,255,.25));
+  mix-blend-mode: screen;
+  animation: lucaBurst 1.1s ease-out forwards;
+}
+
 @media (max-width: 520px){
   .staff-card{ flex-direction: column; align-items: stretch; text-align: center; }
   .staff-card__trigger{ flex-direction: column; }
@@ -1519,3 +1574,92 @@ body.policy-open{ overflow: hidden; }
 }
 .staff-modal__insta:hover{ transform: translateY(-2px); background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.32); }
 .staff-modal__insta:active{ transform: translateY(0); }
+
+.staff-modal--luca{
+  overflow: hidden;
+}
+.staff-modal__dialog--luca{
+  position: relative;
+  overflow: hidden;
+  animation: lucaModalGlow 1.2s ease-out;
+}
+.staff-modal__dialog--luca::before,
+.staff-modal__dialog--luca::after{
+  content:"";
+  position:absolute;
+  inset:-25%;
+  pointer-events:none;
+  opacity:0;
+}
+.staff-modal__dialog--luca::before{
+  background:
+    radial-gradient(circle at 25% 30%, rgba(134,192,255,.45) 0 18%, transparent 48%),
+    radial-gradient(circle at 78% 20%, rgba(255,160,230,.4) 0 16%, transparent 52%),
+    radial-gradient(circle at 50% 80%, rgba(255,255,255,.35) 0 20%, transparent 56%);
+  animation: lucaSparkle 1.1s ease-out forwards;
+}
+.staff-modal__dialog--luca::after{
+  background: conic-gradient(from 140deg, rgba(140,190,255,.28), rgba(255,255,255,0) 55%, rgba(255,150,220,.32) 75%, rgba(140,190,255,.28));
+  mix-blend-mode: screen;
+  animation: lucaBurst 1.1s ease-out forwards;
+}
+
+.luca-particle{
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color, #9fd4ff);
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(.4);
+  animation: lucaParticle 1.4s ease-out forwards;
+  animation-delay: var(--delay, 0ms);
+  box-shadow: 0 0 12px rgba(255,255,255,.45);
+}
+
+@keyframes lucaGlow{
+  0%{ box-shadow: 0 18px 32px rgba(0,0,0,.18), 0 0 0 0 rgba(120,160,255,.5); }
+  40%{ box-shadow: 0 24px 40px rgba(0,0,0,.22), 0 0 0 8px rgba(120,160,255,.25); }
+  70%{ box-shadow: 0 20px 34px rgba(0,0,0,.2), 0 0 0 4px rgba(255,130,220,.2); }
+  100%{ box-shadow: 0 18px 32px rgba(0,0,0,.18), 0 0 0 0 rgba(120,160,255,0); }
+}
+
+@keyframes lucaModalGlow{
+  0%{ box-shadow: 0 40px 60px rgba(0,0,0,.5), 0 0 0 0 rgba(140,190,255,.4); }
+  45%{ box-shadow: 0 46px 70px rgba(0,0,0,.55), 0 0 0 12px rgba(140,190,255,.2); }
+  100%{ box-shadow: 0 40px 60px rgba(0,0,0,.5), 0 0 0 0 rgba(140,190,255,0); }
+}
+
+@keyframes lucaSparkle{
+  0%{ transform: scale(.6) rotate(-12deg); opacity:.7; }
+  60%{ transform: scale(1.15) rotate(8deg); opacity:.4; }
+  100%{ transform: scale(1.45) rotate(18deg); opacity:0; }
+}
+
+@keyframes lucaBurst{
+  0%{ transform: scale(.4) rotate(-25deg); opacity:.55; }
+  50%{ transform: scale(1.1) rotate(10deg); opacity:.35; }
+  100%{ transform: scale(1.55) rotate(35deg); opacity:0; }
+}
+
+@keyframes lucaPhotoPop{
+  0%{ transform: scale(0.9) rotate(-3deg); filter: saturate(1.05); }
+  32%{ transform: scale(1.12) rotate(2deg); filter: saturate(1.4); }
+  68%{ transform: scale(1.02) rotate(-1deg); filter: saturate(1.25); }
+  100%{ transform: scale(1.02) rotate(0deg); filter: saturate(1.25); }
+}
+
+@keyframes lucaText{
+  0%{ background-position: 0 50%; opacity:.2; }
+  50%{ background-position: 100% 50%; opacity:1; }
+  100%{ background-position: 50% 50%; opacity:1; }
+}
+
+@keyframes lucaParticle{
+  0%{ opacity:0; transform: translate(-50%, -50%) scale(.3); }
+  10%{ opacity:1; }
+  100%{ opacity:0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(.7); }
+}

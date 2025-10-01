@@ -262,6 +262,33 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
     return `@${trimmed.replace(/^@+/, '')}`;
   }
 
+  const spawnLucaParticles = () => {
+    if (!dialog) return;
+    const fragment = document.createDocumentFragment();
+    const colors = ['#8ab8ff', '#ff9ce6', '#ffd06a', '#7af0ff'];
+    for (let i = 0; i < 10; i += 1) {
+      const span = document.createElement('span');
+      span.className = 'luca-particle';
+      const angle = (Math.PI * 2 * i) / 10;
+      const radius = 90 + Math.random() * 60;
+      const dx = Math.cos(angle) * radius;
+      const dy = Math.sin(angle) * radius;
+      span.style.setProperty('--dx', `${dx}px`);
+      span.style.setProperty('--dy', `${dy}px`);
+      span.style.setProperty('--delay', `${Math.random() * 120}ms`);
+      span.style.setProperty('--color', colors[i % colors.length]);
+      span.addEventListener('animationend', () => span.remove());
+      fragment.appendChild(span);
+    }
+    requestAnimationFrame(() => {
+      dialog.appendChild(fragment);
+    });
+  };
+
+  const cleanupLucaParticles = () => {
+    dialog.querySelectorAll('.luca-particle').forEach((node) => node.remove());
+  };
+
   function openModal(trigger){
     activeTrigger = trigger;
     const { name, role, desc, photo, instagram } = trigger.dataset;
@@ -274,6 +301,17 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
     descEl.textContent = desc || '';
     photoEl.src = photo || '';
     photoEl.alt = name ? `Ritratto di ${name}` : '';
+
+    const isLuca = (name || '').toLowerCase() === 'luca marastoni';
+    if (isLuca) {
+      modal.classList.add('staff-modal--luca');
+      dialog.classList.add('staff-modal__dialog--luca');
+      spawnLucaParticles();
+    } else {
+      modal.classList.remove('staff-modal--luca');
+      dialog.classList.remove('staff-modal__dialog--luca');
+      cleanupLucaParticles();
+    }
 
     if (instaWrap && instaLink) {
       const handle = normalizeHandle(instagram || '');
@@ -306,6 +344,9 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
     modal.hidden = true;
     document.body.classList.remove('no-scroll');
     document.removeEventListener('keydown', onKeydown);
+    modal.classList.remove('staff-modal--luca');
+    dialog.classList.remove('staff-modal__dialog--luca');
+    cleanupLucaParticles();
     if (activeCard) {
       activeCard.classList.remove('is-active');
       activeCard = null;
