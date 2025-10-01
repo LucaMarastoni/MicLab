@@ -228,6 +228,106 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   }, { once: true });
 })();
 
+/* ===== STAFF MODAL ===== */
+(function setupStaffModal(){
+  const triggers = document.querySelectorAll('.staff-card__trigger[data-name]');
+  const modal = document.getElementById('staffModal');
+  if (!modal || triggers.length === 0) return;
+
+  const nameEl = modal.querySelector('[data-staff-modal-name]');
+  const roleEl = modal.querySelector('[data-staff-modal-role]');
+  const descEl = modal.querySelector('[data-staff-modal-desc]');
+  const photoEl = modal.querySelector('[data-staff-modal-photo]');
+  const dismissEls = modal.querySelectorAll('[data-staff-dismiss]');
+  const dialog = modal.querySelector('.staff-modal__dialog');
+  const closeBtn = modal.querySelector('.staff-modal__close');
+  const instaWrap = modal.querySelector('.staff-modal__actions');
+  const instaLink = modal.querySelector('[data-staff-modal-instagram]');
+  let activeTrigger = null;
+  let activeCard = null;
+
+  if (!dialog || !nameEl || !roleEl || !descEl || !photoEl) return;
+
+  const onKeydown = (event) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeModal();
+    }
+  };
+
+  function normalizeHandle(handle = ''){
+    const trimmed = String(handle).trim();
+    if (!trimmed) return '';
+    if (trimmed.startsWith('@')) return trimmed;
+    return `@${trimmed.replace(/^@+/, '')}`;
+  }
+
+  function openModal(trigger){
+    activeTrigger = trigger;
+    const { name, role, desc, photo, instagram } = trigger.dataset;
+    if (activeCard) activeCard.classList.remove('is-active');
+    activeCard = trigger.closest('.staff-card');
+    activeCard?.classList.add('is-active');
+
+    nameEl.textContent = name || '';
+    roleEl.textContent = role || '';
+    descEl.textContent = desc || '';
+    photoEl.src = photo || '';
+    photoEl.alt = name ? `Ritratto di ${name}` : '';
+
+    if (instaWrap && instaLink) {
+      const handle = normalizeHandle(instagram || '');
+      if (handle) {
+        const slug = handle.slice(1);
+        instaLink.href = `https://www.instagram.com/${slug}/`;
+        instaLink.setAttribute('aria-label', `Apri Instagram di ${name || 'membro dello staff'}`);
+        instaWrap.hidden = false;
+      } else {
+        instaLink.href = 'https://www.instagram.com/';
+        instaLink.setAttribute('aria-label', `Instagram di ${name || 'membro dello staff'}`);
+        instaWrap.hidden = true;
+      }
+    }
+
+    modal.hidden = false;
+    document.body.classList.add('no-scroll');
+    document.addEventListener('keydown', onKeydown);
+
+    requestAnimationFrame(() => {
+      try {
+        closeBtn?.focus({ preventScroll: true });
+      } catch {
+        closeBtn?.focus();
+      }
+    });
+  }
+
+  function closeModal(){
+    modal.hidden = true;
+    document.body.classList.remove('no-scroll');
+    document.removeEventListener('keydown', onKeydown);
+    if (activeCard) {
+      activeCard.classList.remove('is-active');
+      activeCard = null;
+    }
+    if (activeTrigger && typeof activeTrigger.focus === 'function') {
+      activeTrigger.focus();
+    }
+  }
+
+  triggers.forEach((trigger) => {
+    trigger.addEventListener('click', () => openModal(trigger));
+  });
+
+  dismissEls.forEach((el) => {
+    el.addEventListener('click', closeModal);
+  });
+
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal) closeModal();
+  });
+})();
+
 /* ===== ARTISTS GALLERY ===== */
 (function setupArtistGalleries(){
   const modal = document.querySelector('[data-gallery-modal]');
@@ -246,6 +346,10 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   const dismissEls = modal.querySelectorAll('[data-gallery-dismiss]');
   const closeBtn = modal.querySelector('.gallery-modal__close');
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const zoomLayer = modal.querySelector('[data-gallery-zoom]');
+  const zoomImg = modal.querySelector('[data-gallery-zoom-image]');
+  const zoomCaption = modal.querySelector('[data-gallery-zoom-caption]');
+  const zoomDismissEls = modal.querySelectorAll('[data-gallery-zoom-dismiss]');
 
   if (!panel || !imageEl || !nameEl || !counterEl || !thumbsWrap) return;
 
@@ -449,6 +553,8 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   let lastTrigger = null;
   let closeTimeout = null;
   let transitionDirection = 0;
+  let zoomActive = false;
+  let zoomLastFocus = null;
 
   const deactivateTrigger = (btn) => {
     if (!btn) return;
@@ -488,6 +594,61 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
         imageEl.classList.remove(...slideClasses);
       }
     });
+  }
+
+  const onZoomKeydown = (event) => {
+    if (!zoomActive) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopPropagation();
+      closeZoom();
+    }
+  };
+
+  function openZoom(){
+    if (!zoomLayer || !zoomImg) return;
+    const src = imageEl.dataset.zoomSrc || imageEl.getAttribute('src');
+    if (!src) return;
+
+    zoomLastFocus = document.activeElement;
+    zoomImg.src = src;
+    zoomImg.alt = imageEl.dataset.zoomAlt || imageEl.alt || '';
+
+    if (zoomCaption) {
+      const nameText = nameEl.textContent || '';
+      const summaryText = summaryEl && !summaryEl.hidden ? summaryEl.textContent.trim() : '';
+      const captionText = summaryText ? `${nameText} — ${summaryText}`.trim() : nameText;
+      zoomCaption.textContent = captionText;
+      zoomCaption.hidden = captionText.length === 0;
+    }
+
+    zoomLayer.hidden = false;
+    zoomActive = true;
+    document.addEventListener('keydown', onZoomKeydown, true);
+
+    const zoomCloseBtn = zoomLayer.querySelector('.gallery-zoom__close');
+    requestAnimationFrame(() => {
+      try {
+        zoomCloseBtn?.focus({ preventScroll: true });
+      } catch {
+        zoomCloseBtn?.focus();
+      }
+    });
+  }
+
+  function closeZoom(silent = false){
+    if (!zoomActive || !zoomLayer) return;
+    zoomLayer.hidden = true;
+    zoomActive = false;
+    document.removeEventListener('keydown', onZoomKeydown, true);
+    if (!silent && zoomLastFocus && typeof zoomLastFocus.focus === 'function') {
+      try {
+        zoomLastFocus.focus({ preventScroll: true });
+      } catch {
+        zoomLastFocus.focus();
+      }
+    }
+    zoomLastFocus = null;
   }
 
   function getCurrentGallery(){
@@ -535,6 +696,8 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
     }
 
     imageEl.alt = entry.alt || entry.name;
+    imageEl.dataset.zoomSrc = src;
+    imageEl.dataset.zoomAlt = entry.alt || entry.name || '';
     nameEl.textContent = entry.name;
 
     if (summaryEl) {
@@ -702,6 +865,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
   function onKeydown(event){
     if (modal.hidden) return;
+    if (zoomActive) return;
     if (event.key === 'Escape') {
       event.preventDefault();
       closeGallery();
@@ -716,6 +880,8 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
   function closeGallery(){
     if (modal.hidden || modal.classList.contains('is-closing')) return;
+
+    if (zoomActive) closeZoom(true);
 
     modal.classList.remove('is-active');
     modal.classList.add('is-closing');
@@ -821,6 +987,20 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   dismissEls.forEach((el) => {
     el.addEventListener('click', closeGallery);
   });
+
+  if (zoomLayer && zoomImg) {
+    imageEl.addEventListener('click', () => {
+      if (!zoomActive) openZoom();
+    });
+
+    zoomDismissEls.forEach((el) => {
+      el.addEventListener('click', () => closeZoom());
+    });
+
+    zoomLayer.addEventListener('click', (event) => {
+      if (event.target === zoomLayer) closeZoom();
+    });
+  }
 })();
 
 /* ===== PRIVACY POLICY MODAL ===== */
