@@ -59,6 +59,41 @@ body{
   gap: 12px;
 }
 
+.header-actions{
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 4vw, 22px);
+}
+
+.header-social{
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 3vw, 18px);
+}
+
+.social-link{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(28px, 6vw, 36px);
+  height: clamp(28px, 6vw, 36px);
+  border-radius: 50%;
+  background: rgba(255,255,255,.08);
+  transition: transform .2s var(--ease), background .2s var(--ease);
+}
+.social-link:focus-visible{
+  outline: 2px solid rgba(255,255,255,.8);
+  outline-offset: 3px;
+}
+.social-link:hover{ background: rgba(255,255,255,.16); }
+.social-link:active{ transform: scale(.95); }
+.social-link img{
+  width: clamp(14px, 3.2vw, 18px);
+  height: clamp(14px, 3.2vw, 18px);
+  object-fit: contain;
+  filter: drop-shadow(0 0 2px rgba(0,0,0,.4));
+}
+
 .brand{
   display: inline-flex; align-items: center; gap: 10px;
   text-decoration: none; color: var(--fg);
