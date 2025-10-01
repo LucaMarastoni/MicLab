@@ -27,9 +27,11 @@ const heroVideo = document.getElementById('heroVideo');
 
 if (heroVideo) {
   const playOverlay = document.getElementById('playOverlay');
+  const audioToggle = document.getElementById('audioToggle');
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let currentBucket = null;
   let resizeFrame = null;
+  let userEnabledAudio = false;
 
   const attemptPlay = () => heroVideo.play()
     .then(() => { if (playOverlay) playOverlay.hidden = true; })
@@ -75,6 +77,30 @@ if (heroVideo) {
     });
   }
 
+  const updateAudioToggle = () => {
+    if (!audioToggle) return;
+    const unmuted = !heroVideo.muted && heroVideo.volume > 0;
+    audioToggle.setAttribute('aria-pressed', String(unmuted));
+    audioToggle.setAttribute('aria-label', unmuted ? 'Disattiva audio' : 'Attiva audio');
+    audioToggle.dataset.state = unmuted ? 'unmuted' : 'muted';
+    const icon = unmuted ? '🔊' : '🔇';
+    audioToggle.querySelector('[aria-hidden]')?.replaceChildren(document.createTextNode(icon));
+  };
+
+  if (audioToggle) {
+    audioToggle.addEventListener('click', () => {
+      userEnabledAudio = !userEnabledAudio;
+      heroVideo.muted = !userEnabledAudio;
+      if (userEnabledAudio) {
+        heroVideo.volume = 1;
+        attemptPlay();
+      }
+      updateAudioToggle();
+    });
+
+    heroVideo.addEventListener('volumechange', updateAudioToggle);
+  }
+
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       heroVideo.pause();
@@ -87,12 +113,15 @@ if (heroVideo) {
     heroVideo.removeAttribute('autoplay');
     heroVideo.pause();
     if (playOverlay) playOverlay.hidden = false;
+    if (audioToggle) audioToggle.hidden = true;
   }
 
   setHeroSource(true);
   if (!prefersReducedMotion) {
     attemptPlay();
   }
+
+  updateAudioToggle();
 }
 
 // CAROSELLO
