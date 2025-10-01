@@ -1317,6 +1317,7 @@ body.policy-open{ overflow: hidden; }
 .founder-card__body{
   display: grid;
   gap: 10px;
+  text-align: center;
 }
 .founder-card__name{
   margin: 0;
@@ -1379,6 +1380,7 @@ body.policy-open{ overflow: hidden; }
   border-radius: 18px;
   box-shadow: 0 18px 32px rgba(0,0,0,.18);
   color: inherit;
+  justify-content: center;
   transition: transform .22s var(--ease), box-shadow .22s var(--ease), border-color .22s var(--ease);
 }
 .staff-card:hover,
@@ -1396,7 +1398,7 @@ body.policy-open{ overflow: hidden; }
   border: none;
   background: transparent;
   color: inherit;
-  text-align: left;
+  text-align: center;
   cursor: pointer;
 }
 .staff-card__trigger:focus-visible{
@@ -1411,30 +1413,14 @@ body.policy-open{ overflow: hidden; }
   flex-shrink: 0;
   filter: saturate(1.02);
 }
-.staff-card__body{ display: grid; gap: 6px; }
+.staff-card__body{ display: grid; gap: 6px; text-align: center; }
 .staff-card__name{ font-size: 16px; letter-spacing: .02em; }
 .staff-card__role{ color: var(--muted); font-size: 13px; letter-spacing: .12em; text-transform: uppercase; }
-.staff-card__insta{
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,.16);
-  background: rgba(255,255,255,.05);
-  transition: transform .2s var(--ease), background .2s var(--ease), border-color .2s var(--ease);
-}
-.staff-card__insta img{ width: 18px; height: 18px; object-fit: contain; }
-.staff-card__insta:hover{ transform: translateY(-2px); background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.26); }
-.staff-card__insta:active{ transform: translateY(0); }
 
 @media (max-width: 520px){
   .staff-card{ flex-direction: column; align-items: stretch; text-align: center; }
   .staff-card__trigger{ flex-direction: column; }
   .staff-card__photo{ width: 68px; height: 68px; }
-  .staff-card__insta{ align-self: center; }
 }
 
 .staff-modal{
