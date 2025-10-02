@@ -270,10 +270,6 @@ body{
   color: var(--fg);
   letter-spacing: .12em;
 }
-.btn--ghost:hover{
-  transform: translateY(-2px);
-  background: rgba(255,255,255,.08);
-}
 .btn--ghost:active{ transform: translateY(0); }
 .btn:hover{ transform: translateY(-3px); }
 .btn:active{ transform: translateY(0); filter: brightness(.95); }
@@ -454,9 +450,12 @@ body{
   background: transparent;
   color: var(--fg);
 }
+.btn--ghost:hover,
 .btn--outline:hover{
   transform: translateY(-3px);
+  background: rgba(255,255,255,.08);
   box-shadow: 0 12px 22px rgba(255,255,255,.08);
+  border-color: rgba(255,255,255,.24);
 }
 .site-footer{ padding: 24px 0; border-top: 1px solid #111; color: var(--muted); }
 .site-footer small{ font-size: clamp(12px, 2.6vw, 13px); letter-spacing: .08em; text-transform: uppercase; }
