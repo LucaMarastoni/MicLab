@@ -33,6 +33,16 @@ if (heroVideo) {
   let resizeFrame = null;
   let userEnabledAudio = false;
 
+  // enforce autoplay + loop for browsers that ignore markup attributes
+  heroVideo.autoplay = true;
+  heroVideo.loop = true;
+  heroVideo.muted = true;
+  heroVideo.playsInline = true;
+  heroVideo.setAttribute('autoplay', '');
+  heroVideo.setAttribute('loop', '');
+  heroVideo.setAttribute('muted', '');
+  heroVideo.setAttribute('playsinline', '');
+
   const attemptPlay = () => heroVideo.play()
     .then(() => { if (playOverlay) playOverlay.hidden = true; })
     .catch(() => { if (playOverlay) playOverlay.hidden = false; });
@@ -69,6 +79,11 @@ if (heroVideo) {
 
   heroVideo.addEventListener('canplay', () => {
     heroVideo.classList.add('is-ready');
+    if (!prefersReducedMotion) attemptPlay();
+  });
+
+  heroVideo.addEventListener('loadeddata', () => {
+    if (!prefersReducedMotion) attemptPlay();
   });
 
   if (playOverlay) {
