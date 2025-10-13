@@ -806,22 +806,30 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
       const detailsToDisplay = [];
       let firstName = '';
       let lastName = '';
+      let bandInstagramHandle = '';
 
       rawDetails.forEach((detail) => {
-        const label = (detail.label || '').trim().toLowerCase();
+        const originalLabel = (detail.label || '').trim();
+        const normalizedLabel = originalLabel.toLowerCase();
         const value = String(detail.value ?? '').trim();
         if (!value) return;
-        if (label === "nome d'arte") return;
-        if (label.includes('band') && label.includes('ig')) return;
+        if (normalizedLabel === "nome d'arte") return;
 
-        if (label === 'nome') { firstName = value; return; }
-        if (label === 'cognome') { lastName = value; return; }
+        if (normalizedLabel.includes('band') && normalizedLabel.includes('ig')) {
+          bandInstagramHandle = value;
+          return;
+        }
 
-        detailsToDisplay.push({ value, label: detail.label, url: detail.url });
+        if (normalizedLabel === 'nome') { firstName = value; return; }
+        if (normalizedLabel === 'cognome') { lastName = value; return; }
+
+        detailsToDisplay.push({ value, label: originalLabel, url: detail.url });
       });
 
       const fullName = [firstName, lastName].filter(Boolean).join(' ').trim();
-      if (fullName) detailsToDisplay.unshift({ value: fullName, label: 'Nome e cognome' });
+      if (fullName) {
+        detailsToDisplay.unshift({ value: fullName, label: 'Nome e cognome' });
+      }
 
       const instaHandle = ensureHandle(entry.instagram);
       if (instaHandle) {
@@ -832,54 +840,58 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
         });
       }
 
-      const segments = detailsToDisplay.reduce((acc, detail) => {
+      const normalizedBandHandle = ensureHandle(bandInstagramHandle);
+      if (normalizedBandHandle) {
+        detailsToDisplay.push({
+          value: normalizedBandHandle,
+          label: 'Band IG',
+          url: `https://www.instagram.com/${normalizedBandHandle.replace(/^@/, '')}/`
+        });
+      }
+
+      const cards = [];
+
+      detailsToDisplay.forEach((detail) => {
         const rawValue = String(detail.value || '').trim();
-        if (!rawValue) return acc;
+        if (!rawValue) return;
 
-        const labelText = (detail.label || '').trim();
+        const trimmedLabel = (detail.label || '').trim();
+        const labelText = trimmedLabel || 'Info';
         const looksLikeHandle = rawValue.startsWith('@')
-          || labelText.toLowerCase().includes('instagram')
-          || labelText.toLowerCase().includes('ig');
-
+          || trimmedLabel.toLowerCase().includes('instagram')
+          || trimmedLabel.toLowerCase().includes('ig');
         const href = detail.url || (looksLikeHandle
           ? `https://www.instagram.com/${rawValue.replace(/^@/, '')}/`
           : '');
 
-        const span = document.createElement('span');
+        const card = document.createElement('div');
+        card.className = 'gallery-meta-card';
 
-        if (labelText) {
-          const strong = document.createElement('strong');
-          strong.textContent = `${labelText.trim().replace(/:+$/, '')}:`;
-          span.append(strong, document.createTextNode(' '));
-        }
+        const labelEl = document.createElement('span');
+        labelEl.className = 'gallery-meta-card__label';
+        labelEl.textContent = labelText.replace(/:+$/, '');
+        card.append(labelEl);
+
+        const valueEl = href ? document.createElement('a') : document.createElement('span');
+        valueEl.className = 'gallery-meta-card__value';
+        valueEl.textContent = rawValue;
 
         if (href) {
-          const link = document.createElement('a');
-          link.href = href;
-          link.target = '_blank';
-          link.rel = 'noopener noreferrer';
-          link.textContent = rawValue;
-          link.className = 'gallery-meta-link-inline';
-          link.setAttribute('aria-label', `Apri ${labelText || 'profilo'} di ${entry.name}`);
-          span.append(link);
-        } else {
-          span.append(document.createTextNode(rawValue));
+          valueEl.href = href;
+          valueEl.target = '_blank';
+          valueEl.rel = 'noopener noreferrer';
+          valueEl.setAttribute('aria-label', `Apri ${labelText.toLowerCase()} di ${entry.name}`);
         }
 
-        acc.push(span);
-        return acc;
-      }, []);
+        card.append(valueEl);
+        cards.push(card);
+      });
 
-      if (segments.length > 0) {
-        const paragraph = document.createElement('p');
-        paragraph.className = 'gallery-meta-text';
-        segments.forEach((segment, index) => {
-          paragraph.append(segment);
-          if (index < segments.length - 1) {
-            paragraph.append(document.createTextNode(' • '));
-          }
-        });
-        metaWrap.append(paragraph);
+      if (cards.length > 0) {
+        const grid = document.createElement('div');
+        grid.className = 'gallery-meta-grid';
+        cards.forEach((card) => grid.append(card));
+        metaWrap.append(grid);
         metaWrap.hidden = false;
       } else {
         metaWrap.hidden = true;
