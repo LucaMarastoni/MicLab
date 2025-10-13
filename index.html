@@ -3,36 +3,88 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>MicLab Live Session</title>
-  <meta name="description" content="MicLab: non il solito progetto musicale." />
+  <title>MicLab Live Session • Laboratorio musicale indipendente</title>
+  <meta name="description" content="MicLab Live Session è il laboratorio musicale indipendente che riunisce rapper, cantanti, musicisti e producer a Verona per creare live session originali." />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="MicLab Live Session" />
+  <meta name="keywords" content="MicLab, live session, laboratorio musicale, artisti emergenti, Verona, rap, cantautorato" />
+  <link rel="canonical" href="https://miclab.it/" />
+  <link rel="alternate" hreflang="it" href="https://miclab.it/" />
 
   <!-- Icone -->
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
-  <link rel="manifest" href="assets/site.webmanifest">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+  <link rel="manifest" href="assets/favicon/site.webmanifest">
+  <meta name="theme-color" content="#0a0a0f" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:locale" content="it_IT" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="MicLab Live Session • Laboratorio musicale indipendente" />
+  <meta property="og:description" content="MicLab Live Session è il collettivo che porta in scena live session e sperimentazione musicale a Verona con sedici artisti emergenti." />
+  <meta property="og:url" content="https://miclab.it/" />
+  <meta property="og:site_name" content="MicLab Live Session" />
+  <meta property="og:image" content="https://miclab.it/assets/icons/logo.jpg" />
+  <meta property="og:image:alt" content="Visual del progetto MicLab Live Session" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="MicLab Live Session • Laboratorio musicale indipendente" />
+  <meta name="twitter:description" content="Live session, rap, cantautorato e sperimentazione: scopri MicLab, il laboratorio musicale indipendente di Verona." />
+  <meta name="twitter:image" content="https://miclab.it/assets/icons/logo.jpg" />
+  <meta name="twitter:image:alt" content="Visual del progetto MicLab Live Session" />
 
   <link rel="stylesheet" href="styles.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "name": "MicLab Live Session",
+        "url": "https://miclab.it/",
+        "logo": "https://miclab.it/assets/icons/logo.jpg",
+        "sameAs": [
+          "https://www.instagram.com/miclab.livesession/",
+          "https://www.tiktok.com/@miclablivesession",
+          "https://youtube.com/@miclablivesession"
+        ],
+        "foundingLocation": "Verona, Italia"
+      },
+      {
+        "@type": "WebSite",
+        "name": "MicLab Live Session",
+        "url": "https://miclab.it/",
+        "inLanguage": "it-IT",
+        "description": "MicLab Live Session è un laboratorio musicale indipendente che ospita rapper, cantanti, musicisti e producer in live session originali."
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <!-- HEADER -->
   <header class="site-header" data-header>
     <div class="container header-inner">
       <a href="index.html#hero" class="brand" aria-label="MicLab homepage">
-        <img src="assets/logo.jpg" alt="MicLab logo" class="brand__logo" />
+        <img src="assets/icons/logo.jpg" alt="MicLab logo" class="brand__logo" />
         <span class="brand__name">MICLAB</span>
       </a>
 
       <div class="header-actions">
         <div class="header-social" aria-label="MicLab social links">
           <a class="social-link" href="https://www.instagram.com/miclab.livesession?igsh=MXAxN2VtdXYxNng5NQ%3D%3D&utm_source=qr" target="_blank" rel="noopener" aria-label="Instagram">
-            <img src="assets/insta-logo.png" alt="Instagram" />
+            <img src="assets/icons/insta-logo.png" alt="Instagram" />
           </a>
           <a class="social-link" href="https://www.tiktok.com/@miclablivesession?_t=ZN-90Bu1u8DgP8&_r=1" target="_blank" rel="noopener" aria-label="TikTok">
-            <img src="assets/tiktok.svg" alt="TikTok" />
+            <img src="assets/icons/tiktok.svg" alt="TikTok" />
           </a>
           <a class="social-link" href="https://youtube.com/@miclablivesession?si=vfvbgbafqWhwk1Cj" target="_blank" rel="noopener" aria-label="YouTube">
-            <img src="assets/youtube.svg" alt="YouTube" />
+            <img src="assets/icons/youtube.svg" alt="YouTube" />
           </a>
         </div>
 
@@ -65,11 +117,11 @@
         loop
         autoplay
         preload="metadata"
-        poster="assets/hero.jpg"
-        src="assets/hero.mp4"
-        data-src-sm="assets/hero.mp4"
-        data-src-md="assets/hero.mp4"
-        data-src-lg="assets/hero.mp4"
+        poster="assets/icons/logo.jpg"
+        src="assets/video/hero.mp4"
+        data-src-sm="assets/video/hero.mp4"
+        data-src-md="assets/video/hero.mp4"
+        data-src-lg="assets/video/hero.mp4"
         aria-label="Clip introduttiva MicLab">
       </video>
 
