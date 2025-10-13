@@ -435,7 +435,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   const counterEl = modal.querySelector('[data-gallery-counter]');
   const prevBtn = modal.querySelector('[data-gallery-prev]');
   const nextBtn = modal.querySelector('[data-gallery-next]');
-  const thumbsWrap = modal.querySelector('[data-gallery-thumbs]');
+  let thumbsWrap = modal.querySelector('[data-gallery-thumbs]');
   const dismissEls = modal.querySelectorAll('[data-gallery-dismiss]');
   const closeBtn = modal.querySelector('.gallery-modal__close');
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -444,7 +444,12 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   const zoomCaption = modal.querySelector('[data-gallery-zoom-caption]');
   const zoomDismissEls = modal.querySelectorAll('[data-gallery-zoom-dismiss]');
 
-  if (!panel || !imageEl || !nameEl || !counterEl || !thumbsWrap) return;
+  if (!panel || !imageEl || !nameEl || !counterEl) return;
+
+  if (thumbsWrap) {
+    thumbsWrap.remove();
+    thumbsWrap = null;
+  }
 
   const galleryData = {
     cantanti: [
@@ -754,6 +759,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   }
 
   function ensureActiveThumbInView(){
+    if (!thumbsWrap) return;
     const activeThumb = thumbsWrap.querySelector('.gallery-thumb.is-active');
     if (!activeThumb || typeof activeThumb.scrollIntoView !== 'function') return;
     const behavior = prefersReducedMotion ? 'auto' : 'smooth';
@@ -765,6 +771,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   }
 
   function updateThumbHighlight(){
+    if (!thumbsWrap) return;
     const thumbs = thumbsWrap.querySelectorAll('.gallery-thumb');
     thumbs.forEach((thumb, idx) => {
       const isActive = idx === currentIndex;
@@ -935,6 +942,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   }
 
   function renderThumbs(entries){
+    if (!thumbsWrap) return;
     thumbsWrap.innerHTML = '';
     const fragment = document.createDocumentFragment();
 

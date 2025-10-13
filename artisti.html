@@ -151,20 +151,15 @@
 
       <figure class="gallery-modal__figure">
         <div class="gallery-modal__media">
+          <button class="gallery-modal__nav gallery-modal__nav--prev" type="button" data-gallery-prev aria-label="Immagine precedente">‹</button>
           <img data-gallery-image src="" alt="" loading="lazy" />
+          <button class="gallery-modal__nav gallery-modal__nav--next" type="button" data-gallery-next aria-label="Immagine successiva">›</button>
         </div>
         <figcaption class="gallery-modal__caption">
           <div class="gallery-modal__meta" data-gallery-meta></div>
-      </figcaption>
+          <span class="gallery-modal__counter" data-gallery-counter></span>
+        </figcaption>
       </figure>
-
-      <div class="gallery-modal__controls">
-        <button class="gallery-modal__nav" type="button" data-gallery-prev aria-label="Immagine precedente">‹</button>
-        <span class="gallery-modal__counter" data-gallery-counter></span>
-        <button class="gallery-modal__nav" type="button" data-gallery-next aria-label="Immagine successiva">›</button>
-      </div>
-
-      <div class="gallery-modal__thumbs" data-gallery-thumbs aria-label="Elenco artisti"></div>
     </div>
 
     <div class="gallery-zoom" data-gallery-zoom hidden>
