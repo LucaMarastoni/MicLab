@@ -401,11 +401,13 @@
                 <button class="staff-card__trigger" type="button"
                         data-name="Luca Marastoni"
                         data-role="Sito web"
-                        data-photo="assets/staff/staff-placeholder.svg"
-                        data-desc="Sviluppa e mantiene il sito MicLab, appassionato di IT e cybersecurity."
+                        data-photo="assets/staff/LucaMarastoni.jpg"
+                        data-desc="Sviluppa e mantiene il sito MicLab, appassionato di IT. Se anche tu vuoi un sito come questo scrivimi ;)"
                         data-instagram="@marastoni.luca"
+                        data-mail="marastoni311@gmail.com"
+                        data-site="https://lucamarastoni.github.io/portfolio-websites/"
                         aria-label="Luca Marastoni — Sito web">
-                  <img src="assets/staff/staff-placeholder.svg" alt="Ritratto di Luca Marastoni" class="staff-card__photo" loading="lazy" />
+                  <img src="assets/staff/LucaMarastoni.jpg" alt="Ritratto di Luca Marastoni" class="staff-card__photo" loading="lazy" decoding="async" width="72" height="72" />
                   <span class="staff-card__body">
                     <strong class="staff-card__name">Luca Marastoni</strong>
                     <span class="staff-card__role">Sito web</span>
@@ -432,9 +434,23 @@
           <p class="staff-modal__role" data-staff-modal-role></p>
           <p class="staff-modal__desc" data-staff-modal-desc></p>
           <div class="staff-modal__actions" hidden>
-            <a class="staff-modal__insta" data-staff-modal-instagram href="#" target="_blank" rel="noopener">
-              <img src="assets/insta-logo.png" alt="Instagram" />
+            <a class="staff-modal__action staff-modal__action--insta" data-staff-modal-instagram href="#" target="_blank" rel="noopener">
+              <img src="assets/insta-logo.png" alt="" class="staff-modal__action-icon" aria-hidden="true" />
               <span class="sr-only">Apri Instagram</span>
+            </a>
+            <a class="staff-modal__action staff-modal__action--mail" data-staff-modal-mail href="#" hidden>
+              <svg class="staff-modal__action-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4.5 6h15a1.5 1.5 0 0 1 1.5 1.5v9A1.5 1.5 0 0 1 19.5 18h-15A1.5 1.5 0 0 1 3 16.5v-9A1.5 1.5 0 0 1 4.5 6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                <path d="M5 7l7 6 7-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="sr-only">Invia email</span>
+            </a>
+            <a class="staff-modal__action staff-modal__action--site" data-staff-modal-site href="#" target="_blank" rel="noopener" hidden>
+              <svg class="staff-modal__action-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M3.5 12h17M12 3.5c2.7 2.2 4.2 5.5 4.2 8.5S14.7 18.8 12 20.5c-2.7-1.7-4.2-5-4.2-8s1.5-6.3 4.2-9z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="sr-only">Visita sito personale</span>
             </a>
           </div>
         </div>

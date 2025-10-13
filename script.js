@@ -258,6 +258,8 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   const closeBtn = modal.querySelector('.staff-modal__close');
   const instaWrap = modal.querySelector('.staff-modal__actions');
   const instaLink = modal.querySelector('[data-staff-modal-instagram]');
+  const mailLink = modal.querySelector('[data-staff-modal-mail]');
+  const siteLink = modal.querySelector('[data-staff-modal-site]');
   let activeTrigger = null;
   let activeCard = null;
 
@@ -306,7 +308,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
   function openModal(trigger){
     activeTrigger = trigger;
-    const { name, role, desc, photo, instagram } = trigger.dataset;
+    const { name, role, desc, photo, instagram, mail, site } = trigger.dataset;
     if (activeCard) activeCard.classList.remove('is-active');
     activeCard = trigger.closest('.staff-card');
     activeCard?.classList.add('is-active');
@@ -328,18 +330,53 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
       cleanupLucaParticles();
     }
 
-    if (instaWrap && instaLink) {
-      const handle = normalizeHandle(instagram || '');
-      if (handle) {
-        const slug = handle.slice(1);
-        instaLink.href = `https://www.instagram.com/${slug}/`;
-        instaLink.setAttribute('aria-label', `Apri Instagram di ${name || 'membro dello staff'}`);
-        instaWrap.hidden = false;
-      } else {
-        instaLink.href = 'https://www.instagram.com/';
-        instaLink.setAttribute('aria-label', `Instagram di ${name || 'membro dello staff'}`);
-        instaWrap.hidden = true;
+    if (instaWrap) {
+      const displayName = name || 'membro dello staff';
+      let visibleActions = 0;
+
+      if (instaLink) {
+        const handle = normalizeHandle(instagram || '');
+        if (handle) {
+          const slug = handle.slice(1);
+          instaLink.href = `https://www.instagram.com/${slug}/`;
+          instaLink.setAttribute('aria-label', `Apri Instagram di ${displayName}`);
+          instaLink.hidden = false;
+          visibleActions += 1;
+        } else {
+          instaLink.href = 'https://www.instagram.com/';
+          instaLink.setAttribute('aria-label', `Instagram di ${displayName}`);
+          instaLink.hidden = true;
+        }
       }
+
+      if (mailLink) {
+        const email = (mail || '').trim();
+        if (email) {
+          const normalized = email.replace(/\s+/g, '');
+          mailLink.href = `mailto:${normalized}`;
+          mailLink.setAttribute('aria-label', `Scrivi una mail a ${displayName}`);
+          mailLink.hidden = false;
+          visibleActions += 1;
+        } else {
+          mailLink.hidden = true;
+          mailLink.removeAttribute('href');
+        }
+      }
+
+      if (siteLink) {
+        const website = (site || '').trim();
+        if (website) {
+          siteLink.href = website;
+          siteLink.setAttribute('aria-label', `Visita il sito di ${displayName}`);
+          siteLink.hidden = false;
+          visibleActions += 1;
+        } else {
+          siteLink.hidden = true;
+          siteLink.removeAttribute('href');
+        }
+      }
+
+      instaWrap.hidden = visibleActions === 0;
     }
 
     modal.hidden = false;

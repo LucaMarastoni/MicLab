@@ -1658,8 +1658,12 @@ body.policy-open{ overflow: hidden; }
 }
 .staff-modal__actions{
   margin-top: clamp(10px, 3vw, 18px);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
-.staff-modal__insta{
+.staff-modal__action{
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1668,15 +1672,32 @@ body.policy-open{ overflow: hidden; }
   border-radius: 999px;
   border: 1px solid rgba(255,255,255,.2);
   background: rgba(255,255,255,.08);
+  color: inherit;
   transition: transform .2s var(--ease), background .2s var(--ease), border-color .2s var(--ease);
 }
-.staff-modal__insta img{
+.staff-modal__action:hover{
+  transform: translateY(-2px);
+  background: rgba(255,255,255,.16);
+  border-color: rgba(255,255,255,.32);
+}
+.staff-modal__action:active{
+  transform: translateY(0);
+}
+.staff-modal__action:focus-visible{
+  outline: 2px solid rgba(134,184,255,.85);
+  outline-offset: 3px;
+}
+.staff-modal__action-icon{
   width: 22px;
   height: 22px;
+  display: block;
   object-fit: contain;
 }
-.staff-modal__insta:hover{ transform: translateY(-2px); background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.32); }
-.staff-modal__insta:active{ transform: translateY(0); }
+.staff-modal__action svg.staff-modal__action-icon{
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+}
 
 .staff-modal--luca{
   overflow: hidden;
