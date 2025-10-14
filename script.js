@@ -32,20 +32,54 @@ if (heroVideo) {
   let currentBucket = null;
   let resizeFrame = null;
   let userEnabledAudio = false;
+  let autoplayTries = 0;
 
-  // enforce autoplay + loop for browsers that ignore markup attributes
-  heroVideo.autoplay = true;
-  heroVideo.loop = true;
-  heroVideo.muted = true;
-  heroVideo.playsInline = true;
-  heroVideo.setAttribute('autoplay', '');
-  heroVideo.setAttribute('loop', '');
-  heroVideo.setAttribute('muted', '');
-  heroVideo.setAttribute('playsinline', '');
+  const enforceInlineAutoplayAttributes = () => {
+    heroVideo.autoplay = true;
+    heroVideo.loop = true;
+    heroVideo.playsInline = true;
+    heroVideo.setAttribute('autoplay', '');
+    heroVideo.setAttribute('loop', '');
+    heroVideo.setAttribute('playsinline', '');
+    heroVideo.setAttribute('webkit-playsinline', '');
+    if (!userEnabledAudio) {
+      heroVideo.defaultMuted = true;
+      heroVideo.muted = true;
+      heroVideo.volume = 0;
+      heroVideo.setAttribute('muted', '');
+    }
+  };
 
-  const attemptPlay = () => heroVideo.play()
-    .then(() => { if (playOverlay) playOverlay.hidden = true; })
-    .catch(() => { if (playOverlay) playOverlay.hidden = false; });
+  enforceInlineAutoplayAttributes();
+
+  const attemptPlay = () => {
+    enforceInlineAutoplayAttributes();
+    const playPromise = heroVideo.play();
+    if (!playPromise || typeof playPromise.then !== 'function') {
+      if (playOverlay) playOverlay.hidden = true;
+      autoplayTries = 0;
+      return;
+    }
+    playPromise
+      .then(() => {
+        autoplayTries = 0;
+        if (playOverlay) playOverlay.hidden = true;
+      })
+      .catch((err) => {
+        const notAllowed = err && err.name === 'NotAllowedError';
+        const aborted = err && err.name === 'AbortError';
+        if (aborted) {
+          autoplayTries = 0;
+          return;
+        }
+        if (notAllowed && autoplayTries < 4) {
+          autoplayTries += 1;
+          setTimeout(attemptPlay, 250 * autoplayTries);
+          return;
+        }
+        if (playOverlay) playOverlay.hidden = false;
+      });
+  };
 
   const pickHeroSrc = () => {
     const w = window.innerWidth;
