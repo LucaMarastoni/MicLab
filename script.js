@@ -298,6 +298,7 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   let activeCard = null;
 
   if (!dialog || !nameEl || !roleEl || !descEl || !photoEl) return;
+  const defaultActionDisplay = 'inline-flex';
 
   const onKeydown = (event) => {
     if (event.key === 'Escape') {
@@ -385,28 +386,34 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
       if (mailLink) {
         const email = (mail || '').trim();
-        if (email) {
+        if (isLuca && email) {
           const normalized = email.replace(/\s+/g, '');
           mailLink.href = `mailto:${normalized}`;
           mailLink.setAttribute('aria-label', `Scrivi una mail a ${displayName}`);
           mailLink.hidden = false;
+          mailLink.style.display = defaultActionDisplay;
           visibleActions += 1;
         } else {
           mailLink.hidden = true;
           mailLink.removeAttribute('href');
+          mailLink.removeAttribute('aria-label');
+          mailLink.style.display = 'none';
         }
       }
 
       if (siteLink) {
         const website = (site || '').trim();
-        if (website) {
+        if (isLuca && website) {
           siteLink.href = website;
           siteLink.setAttribute('aria-label', `Visita il sito di ${displayName}`);
           siteLink.hidden = false;
+          siteLink.style.display = defaultActionDisplay;
           visibleActions += 1;
         } else {
           siteLink.hidden = true;
           siteLink.removeAttribute('href');
+          siteLink.removeAttribute('aria-label');
+          siteLink.style.display = 'none';
         }
       }
 
