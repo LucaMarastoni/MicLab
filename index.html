@@ -112,33 +112,18 @@
   <main>
     <!-- HERO / LEADER -->
     <section id="hero" class="hero">
-      <video
-        id="heroVideo"
-        class="hero__video"
-        playsinline
-        webkit-playsinline
-        muted
-        loop
-        autoplay
-        preload="metadata"
-        poster="assets/icons/logo.jpg"
-        src="assets/video/hero.mp4"
-        data-src-sm="assets/video/hero.mp4"
-        data-src-md="assets/video/hero.mp4"
-        data-src-lg="assets/video/hero.mp4"
-        aria-label="Clip introduttiva MicLab">
-      </video>
+      <img
+        class="hero__media"
+        src="assets/photo/foto-hero.jpg"
+        alt="Foto hero MicLab"
+        decoding="async"
+        fetchpriority="high"
+      />
 
       <div class="hero__overlay">
         <h1 class="hero__title">MicLab</h1>
         <p class="subtitle">non è il solito progetto musicale.</p>
       </div>
-
-      <button class="audio-toggle" id="audioToggle" aria-pressed="false" aria-label="Attiva audio">
-        <span aria-hidden="true">🔇</span>
-      </button>
-
-      <button class="play-overlay" id="playOverlay" hidden aria-label="Avvia video">►</button>
     </section>
 
     <!-- CAROSELLO -->
