@@ -541,6 +541,22 @@ body.policy-open{ overflow: hidden; }
   cursor: pointer;
 }
 .linklike:focus-visible{ outline: 2px dashed #fff; outline-offset: 2px; }
+.site-credit{
+  padding: 0 0 24px;
+  text-align: center;
+  color: var(--muted);
+}
+.site-credit a{
+  color: var(--muted);
+  text-decoration: none;
+  font-size: clamp(11px, 2.4vw, 12px);
+  letter-spacing: .06em;
+}
+.site-credit a:hover{
+  color: var(--fg);
+  text-decoration: underline;
+}
+.site-credit a:focus-visible{ outline: 2px dashed #fff; outline-offset: 2px; }
 
 /* ===== MODAL (Privacy Policy) ===== */
 .modal[hidden]{ display: none !important; }
