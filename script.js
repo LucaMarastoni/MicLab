@@ -1,3 +1,24 @@
+// COMING SOON OVERLAY (si disattiva con 5 tap/click)
+(function setupComingSoonUnlock(){
+  const overlay = document.getElementById('coming-soon-overlay');
+  const body = document.body;
+  if (!overlay || !body.classList.contains('coming-soon-active')) return;
+
+  let tapCount = 0;
+  const tapsNeeded = 5;
+
+  const handleTap = () => {
+    tapCount += 1;
+    if (tapCount >= tapsNeeded) {
+      overlay.removeEventListener('click', handleTap);
+      body.classList.remove('coming-soon-active');
+      overlay.remove();
+    }
+  };
+
+  overlay.addEventListener('click', handleTap);
+})();
+
 // MENÙ A TENDINA
 const menuBtn = document.getElementById('menuToggle');
 const menu = document.getElementById('siteMenu');
