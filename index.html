@@ -127,6 +127,23 @@
         decoding="async"
         fetchpriority="high"
       />
+      <video
+        id="heroVideo"
+        class="hero__video"
+        poster="assets/photo/foto-hero.jpg"
+        preload="metadata"
+        muted
+        playsinline
+        data-src-sm="assets/video/hero.mp4"
+        data-src-md="assets/video/hero.mp4"
+        data-src-lg="assets/video/hero.mp4"
+        aria-label="Video hero MicLab"
+      ></video>
+
+      <button id="playOverlay" class="play-overlay" type="button" aria-label="Riproduci video" hidden>▶</button>
+      <button id="audioToggle" class="audio-toggle" type="button" aria-label="Attiva audio" aria-pressed="false">
+        <span aria-hidden="true">🔇</span>
+      </button>
 
       <div class="hero__overlay">
         <h1 class="hero__title">MicLab</h1>
