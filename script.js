@@ -217,46 +217,35 @@ if (rail && prevBtn && nextBtn) {
   window.addEventListener('load', updateNavButtons);
   window.addEventListener('resize', updateNavButtons);
 
-  // Drag to scroll
-  let isDown = false;
-  let startX = 0;
-  let startScroll = 0;
-  let suppressClick = false;
-  const dragThreshold = 8;
-
-  rail.addEventListener('pointerdown', (e) => {
-    if (typeof e.button === 'number' && e.button !== 0) return;
-    isDown = true;
-    suppressClick = false;
-    startX = e.clientX;
-    startScroll = rail.scrollLeft;
-  });
-
-  rail.addEventListener('pointermove', (e) => {
-    if (!isDown) return;
-    const dx = e.clientX - startX;
-    if (!suppressClick && Math.abs(dx) > dragThreshold) {
-      suppressClick = true;
-      rail.style.cursor = 'grabbing';
-    }
-    if (!suppressClick) return;
-    rail.scrollLeft = startScroll - dx;
-  });
-
-  ['pointerup', 'pointercancel', 'pointerleave'].forEach((evt) => {
-    rail.addEventListener(evt, () => {
-      isDown = false;
-      rail.style.cursor = '';
-      setTimeout(() => { suppressClick = false; }, 0);
-    });
-  });
-
-  rail.addEventListener('click', (event) => {
-    if (!suppressClick) return;
-    event.preventDefault();
-    event.stopPropagation();
-  }, true);
 }
+
+// Skeleton loading per copertine carosello
+const setupCarouselSkeletons = () => {
+  const cards = document.querySelectorAll('.carousel .card');
+  if (cards.length === 0) return;
+
+  cards.forEach((card) => {
+    const img = card.querySelector('.card__img');
+    if (!img) {
+      card.classList.add('is-loaded');
+      return;
+    }
+
+    const markLoaded = () => {
+      card.classList.add('is-loaded');
+    };
+
+    if (img.complete) {
+      markLoaded();
+      return;
+    }
+
+    img.addEventListener('load', markLoaded, { once: true });
+    img.addEventListener('error', markLoaded, { once: true });
+  });
+};
+
+setupCarouselSkeletons();
 
 /* ===== REVEAL ON SCROLL + ROTATORE ===== */
 
