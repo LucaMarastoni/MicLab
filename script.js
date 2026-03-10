@@ -221,18 +221,25 @@ if (rail && prevBtn && nextBtn) {
   let isDown = false;
   let startX = 0;
   let startScroll = 0;
+  let suppressClick = false;
+  const dragThreshold = 8;
 
   rail.addEventListener('pointerdown', (e) => {
+    if (typeof e.button === 'number' && e.button !== 0) return;
     isDown = true;
-    rail.setPointerCapture(e.pointerId);
+    suppressClick = false;
     startX = e.clientX;
     startScroll = rail.scrollLeft;
-    rail.style.cursor = 'grabbing';
   });
 
   rail.addEventListener('pointermove', (e) => {
     if (!isDown) return;
     const dx = e.clientX - startX;
+    if (!suppressClick && Math.abs(dx) > dragThreshold) {
+      suppressClick = true;
+      rail.style.cursor = 'grabbing';
+    }
+    if (!suppressClick) return;
     rail.scrollLeft = startScroll - dx;
   });
 
@@ -240,8 +247,15 @@ if (rail && prevBtn && nextBtn) {
     rail.addEventListener(evt, () => {
       isDown = false;
       rail.style.cursor = '';
+      setTimeout(() => { suppressClick = false; }, 0);
     });
   });
+
+  rail.addEventListener('click', (event) => {
+    if (!suppressClick) return;
+    event.preventDefault();
+    event.stopPropagation();
+  }, true);
 }
 
 /* ===== REVEAL ON SCROLL + ROTATORE ===== */
