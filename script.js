@@ -174,11 +174,13 @@ if (heroVideo) {
 }
 
 // CAROSELLO
-const rail = document.querySelector('[data-carousel]');
-const prevBtn = document.querySelector('[data-prev]');
-const nextBtn = document.querySelector('[data-next]');
+document.querySelectorAll('[data-carousel]').forEach((rail) => {
+  const section = rail.closest('.carousel-section');
+  const prevBtn = section?.querySelector('[data-prev]');
+  const nextBtn = section?.querySelector('[data-next]');
 
-if (rail && prevBtn && nextBtn) {
+  if (!prevBtn || !nextBtn) return;
+
   const updateNavButtons = () => {
     const maxScroll = rail.scrollWidth - rail.clientWidth - 1;
     prevBtn.disabled = rail.scrollLeft <= 0;
@@ -195,8 +197,8 @@ if (rail && prevBtn && nextBtn) {
   rail.addEventListener('scroll', updateNavButtons);
   window.addEventListener('load', updateNavButtons);
   window.addEventListener('resize', updateNavButtons);
-
-}
+  updateNavButtons();
+});
 
 // Skeleton loading per copertine carosello
 const setupCarouselSkeletons = () => {
