@@ -1,3 +1,32 @@
+// SCHERMATA DI CARICAMENTO
+const siteLoader = document.querySelector('[data-site-loader]');
+
+if (siteLoader) {
+  const loaderStartedAt = performance.now();
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let loaderDismissed = false;
+
+  const dismissLoader = () => {
+    if (loaderDismissed) return;
+    loaderDismissed = true;
+
+    const minimumVisibleTime = reducedMotion ? 0 : 450;
+    const remainingTime = Math.max(0, minimumVisibleTime - (performance.now() - loaderStartedAt));
+
+    window.setTimeout(() => {
+      siteLoader.classList.add('is-hidden');
+      window.setTimeout(() => siteLoader.remove(), reducedMotion ? 0 : 700);
+    }, remainingTime);
+  };
+
+  if (document.readyState === 'complete') {
+    dismissLoader();
+  } else {
+    window.addEventListener('load', dismissLoader, { once: true });
+    window.setTimeout(dismissLoader, 5000);
+  }
+}
+
 // MENÙ A TENDINA
 const menuBtn = document.getElementById('menuToggle');
 const menu = document.getElementById('siteMenu');

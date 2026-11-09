@@ -28,6 +28,35 @@ body{
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Schermata di caricamento */
+.site-loader{
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  background: #000;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity .65s var(--ease), visibility 0s linear .65s;
+}
+.site-loader.is-hidden{
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.site-loader__logo{
+  width: clamp(96px, 24vw, 168px);
+  height: auto;
+  filter: drop-shadow(0 0 28px rgba(63,91,190,.28));
+  animation: loader-breathe 1.15s ease-in-out infinite alternate;
+}
+
+@keyframes loader-breathe{
+  from{ opacity: .72; transform: scale(.96); }
+  to{ opacity: 1; transform: scale(1); }
+}
+
 /* =========================
    UTILITY CONTAINER
    ========================= */
